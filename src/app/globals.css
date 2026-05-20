@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-ink: 16 24 40;
+  --color-muted: 102 112 133;
+  --color-line: 228 231 236;
+  --color-panel: 255 255 255;
+  --page-bg: #f6f8fb;
+  --field-bg: #ffffff;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-ink: 241 245 249;
+  --color-muted: 148 163 184;
+  --color-line: 51 65 85;
+  --color-panel: 15 23 42;
+  --page-bg: #020617;
+  --field-bg: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: rgb(var(--color-ink));
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  background: var(--field-bg);
+  color: rgb(var(--color-ink));
+}
+
+@layer utilities {
+  .dark .bg-white {
+    background-color: rgb(var(--color-panel));
+  }
+
+  .dark .bg-white\/95 {
+    background-color: rgb(var(--color-panel) / 0.95);
+  }
+
+  .dark .bg-slate-50,
+  .dark .bg-slate-100,
+  .dark .bg-\[\#f6f8fb\] {
+    background-color: #0f172a;
+  }
+
+  .dark .hover\:bg-slate-50:hover,
+  .dark .hover\:bg-slate-100:hover,
+  .dark .focus\:bg-white:focus {
+    background-color: #1e293b;
+  }
+
+  .dark .shadow-soft,
+  .dark .shadow-subtle {
+    box-shadow: 0 16px 50px rgb(0 0 0 / 0.24);
+  }
+}
+
+.receipt-paper {
+  width: 58mm;
+  color: #000;
+  background: #fff;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.receipt-paper[data-width="80"] {
+  width: 80mm;
+  font-size: 11px;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-shell {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .receipt-paper {
+    width: 58mm;
+    margin: 0;
+    box-shadow: none !important;
+  }
+
+  .receipt-paper[data-width="80"] {
+    width: 80mm;
+  }
+
+  @page {
+    margin: 3mm;
+  }
+}

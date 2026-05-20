@@ -1,0 +1,10 @@
+.vercel
+.env
+.env*.local
+node_modules
+.next
+.qa
+laundry-ai
+*.py
+.DS_Store
+tsconfig.tsbuildinfo

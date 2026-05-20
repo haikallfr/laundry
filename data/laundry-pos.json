@@ -1,0 +1,771 @@
+{
+  "users": [
+    {
+      "id": "usr-owner",
+      "name": "Yessica",
+      "email": "owner@laundrypro.test",
+      "phone": "081234567890",
+      "role": "OWNER",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-cashier",
+      "name": "Haikal",
+      "email": "kasir@laundrypro.test",
+      "phone": "081298765432",
+      "role": "CASHIER",
+      "status": "ACTIVE"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cus-1779086264386",
+      "name": "Haikal",
+      "phone": "",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-05-18T06:37:44.386Z",
+      "updatedAt": "2026-05-18T06:38:07.839Z"
+    },
+    {
+      "id": "cus-1779080810418",
+      "name": "ahmad",
+      "phone": "081364804287",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-05-18T05:06:40.459Z",
+      "updatedAt": "2026-05-18T05:07:00.591Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "srv-1",
+      "name": "Cuci Kering",
+      "category": "Reguler",
+      "unit": "KG",
+      "price": 7000,
+      "cost": 0,
+      "estimatedDuration": "2 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-2",
+      "name": "Cuci Setrika",
+      "category": "Reguler",
+      "unit": "KG",
+      "price": 9000,
+      "cost": 0,
+      "estimatedDuration": "2 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-3",
+      "name": "Setrika Saja",
+      "category": "Reguler",
+      "unit": "KG",
+      "price": 6000,
+      "cost": 0,
+      "estimatedDuration": "1 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-4",
+      "name": "Laundry Express",
+      "category": "Express",
+      "unit": "KG",
+      "price": 15000,
+      "cost": 0,
+      "estimatedDuration": "8 jam",
+      "isActive": true
+    },
+    {
+      "id": "srv-5",
+      "name": "Bed Cover",
+      "category": "Household",
+      "unit": "PCS",
+      "price": 35000,
+      "cost": 0,
+      "estimatedDuration": "3 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-6",
+      "name": "Sepatu",
+      "category": "Special Care",
+      "unit": "PCS",
+      "price": 45000,
+      "cost": 0,
+      "estimatedDuration": "3 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-7",
+      "name": "Karpet",
+      "category": "Household",
+      "unit": "METER",
+      "price": 18000,
+      "cost": 0,
+      "estimatedDuration": "4 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-8",
+      "name": "Boneka",
+      "category": "Special Care",
+      "unit": "PCS",
+      "price": 25000,
+      "cost": 0,
+      "estimatedDuration": "2 hari",
+      "isActive": true
+    },
+    {
+      "id": "srv-9",
+      "name": "Jas",
+      "category": "Premium",
+      "unit": "PCS",
+      "price": 55000,
+      "cost": 0,
+      "estimatedDuration": "3 hari",
+      "isActive": true
+    }
+  ],
+  "transactions": [
+    {
+      "id": "trx-1779086287664",
+      "transactionNumber": "LDY-20260518-9721",
+      "customerId": "cus-1779086264386",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779086264386",
+        "name": "Haikal",
+        "phone": "",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T06:37:44.386Z",
+        "updatedAt": "2026-05-18T06:37:44.386Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "e3afb211-653c-47b6-9fc5-9e78bc0e325a",
+          "serviceId": "srv-1",
+          "serviceName": "Cuci Kering",
+          "unit": "KG",
+          "quantity": 2,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 14000,
+          "notes": ""
+        }
+      ],
+      "payments": [],
+      "subtotal": 14000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 14000,
+      "paidAmount": 0,
+      "changeAmount": 0,
+      "paymentStatus": "UNPAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-05-20T06:38:01.176Z",
+      "notes": "",
+      "createdAt": "2026-05-18T06:38:04.330Z",
+      "updatedAt": "2026-05-18T06:38:04.330Z"
+    },
+    {
+      "id": "trx-1779080820564",
+      "transactionNumber": "LDY-20260518-6919",
+      "customerId": "cus-1779080810418",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779080810418",
+        "name": "ahmad",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T05:06:40.459Z",
+        "updatedAt": "2026-05-18T05:06:40.459Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "a02675b7-ea95-4e8b-8b99-13278c9358c4",
+          "serviceId": "srv-4",
+          "serviceName": "Laundry Express",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 15000,
+          "cost": 0,
+          "subtotal": 75000,
+          "notes": ""
+        }
+      ],
+      "payments": [],
+      "subtotal": 75000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 75000,
+      "paidAmount": 0,
+      "changeAmount": 0,
+      "paymentStatus": "UNPAID",
+      "laundryStatus": "PROCESSING",
+      "estimatedDoneAt": "2026-05-18T13:06:56.740Z",
+      "notes": "",
+      "createdAt": "2026-05-18T05:06:59.412Z",
+      "updatedAt": "2026-05-18T05:35:55.094Z"
+    },
+    {
+      "id": "trx-1779079709076",
+      "transactionNumber": "LDY-20260518-8033",
+      "customerId": "cus-1779079698339",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779079698339",
+        "name": "Fazar",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:48:12.359Z",
+        "updatedAt": "2026-05-18T04:48:12.359Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "1ef995f1-b181-4fcf-80d0-1eb60bb8884d",
+          "serviceId": "srv-3",
+          "serviceName": "Setrika Saja",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 6000,
+          "cost": 0,
+          "subtotal": 30000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "CASH",
+          "amount": 30000,
+          "paidAt": "2026-05-18T04:48:28.293Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 30000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 30000,
+      "paidAmount": 30000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-05-20T04:48:28.293Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:48:28.293Z",
+      "updatedAt": "2026-05-18T04:48:28.293Z"
+    },
+    {
+      "id": "trx-1779079664036",
+      "transactionNumber": "LDY-20260518-1322",
+      "customerId": "cus-1779078152514",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779078152514",
+        "name": "Haikal",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:22:21.269Z",
+        "updatedAt": "2026-05-18T04:22:21.269Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "034cb7d1-9153-4826-9a44-f2dd64927479",
+          "serviceId": "srv-2",
+          "serviceName": "Cuci Setrika",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 45000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "CASH",
+          "amount": 45000,
+          "paidAt": "2026-05-18T04:47:43.321Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 45000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 45000,
+      "paidAmount": 45000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PROCESSING",
+      "estimatedDoneAt": "2026-05-20T04:47:43.321Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:47:43.321Z",
+      "updatedAt": "2026-05-18T05:10:54.594Z"
+    },
+    {
+      "id": "trx-1779077668026",
+      "transactionNumber": "LDY-20260518-2848",
+      "customerId": "cus-1779077651851",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779077651851",
+        "name": "Haikal",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:14:04.132Z",
+        "updatedAt": "2026-05-18T04:14:04.132Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "3f03a1dd-8ce5-4bd6-a839-d73c690cf0d8",
+          "serviceId": "srv-1",
+          "serviceName": "Cuci Kering",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 35000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "CASH",
+          "amount": 20000,
+          "paidAt": "2026-05-18T04:14:25.626Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 35000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 35000,
+      "paidAmount": 20000,
+      "changeAmount": 0,
+      "paymentStatus": "PARTIAL",
+      "laundryStatus": "READY_FOR_PICKUP",
+      "estimatedDoneAt": "2026-05-20T04:14:25.626Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:14:25.626Z",
+      "updatedAt": "2026-05-18T05:00:41.078Z"
+    },
+    {
+      "id": "trx-1779077444113",
+      "transactionNumber": "LDY-20260518-6055",
+      "customerId": "cus-1779077435833",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779077435833",
+        "name": "Haikal",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:10:27.869Z",
+        "updatedAt": "2026-05-18T04:10:27.869Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "bcc264a4-056a-4b11-8b2c-a3ffd96a7ff2",
+          "serviceId": "srv-1",
+          "serviceName": "Cuci Kering",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 35000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-1779077570569",
+          "transactionId": "trx-1779077444113",
+          "paymentMethod": "CASH",
+          "amount": 35000,
+          "paidAt": "2026-05-18T04:12:50.569Z",
+          "referenceNumber": "",
+          "notes": "Pelunasan saat pengambilan laundry",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 35000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 35000,
+      "paidAmount": 35000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PICKED_UP",
+      "estimatedDoneAt": "2026-05-20T04:10:43.094Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:10:43.094Z",
+      "updatedAt": "2026-05-18T04:12:50.589Z",
+      "pickedUpAt": "2026-05-18T04:12:50.589Z"
+    },
+    {
+      "id": "trx-1779077253279",
+      "transactionNumber": "LDY-20260518-8698",
+      "customerId": "cus-1779077242203",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779077242203",
+        "name": "Rizaldy",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:07:15.715Z",
+        "updatedAt": "2026-05-18T04:07:15.715Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "0bc7f1c6-c1cb-4978-9dc3-4eb1d80eb550",
+          "serviceId": "srv-2",
+          "serviceName": "Cuci Setrika",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 45000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "SPLIT",
+          "amount": 10000,
+          "paidAt": "2026-05-18T04:07:31.837Z",
+          "createdBy": "usr-owner"
+        },
+        {
+          "id": "pay-1779077573957",
+          "transactionId": "trx-1779077253279",
+          "paymentMethod": "CASH",
+          "amount": 35000,
+          "paidAt": "2026-05-18T04:12:53.957Z",
+          "referenceNumber": "",
+          "notes": "Pelunasan saat pengambilan laundry",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 45000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 45000,
+      "paidAmount": 45000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PICKED_UP",
+      "estimatedDoneAt": "2026-05-20T04:07:31.837Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:07:31.837Z",
+      "updatedAt": "2026-05-18T04:12:53.978Z",
+      "pickedUpAt": "2026-05-18T04:12:53.978Z"
+    },
+    {
+      "id": "trx-1779077219863",
+      "transactionNumber": "LDY-20260518-3051",
+      "customerId": "cus-1779077181083",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779077181083",
+        "name": "Farhan",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:06:16.678Z",
+        "updatedAt": "2026-05-18T04:06:16.678Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "70d32f49-accf-4638-83ad-8ee1b01841fd",
+          "serviceId": "srv-3",
+          "serviceName": "Setrika Saja",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 6000,
+          "cost": 0,
+          "subtotal": 30000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "CASH",
+          "amount": 10000,
+          "paidAt": "2026-05-18T04:06:57.200Z",
+          "createdBy": "usr-owner"
+        },
+        {
+          "id": "pay-1779077553683",
+          "transactionId": "trx-1779077219863",
+          "paymentMethod": "CASH",
+          "amount": 20000,
+          "paidAt": "2026-05-18T04:12:33.683Z",
+          "referenceNumber": "",
+          "notes": "Pelunasan saat pengambilan laundry",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 30000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 30000,
+      "paidAmount": 30000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PICKED_UP",
+      "estimatedDoneAt": "2026-05-20T04:06:57.200Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:06:57.200Z",
+      "updatedAt": "2026-05-18T04:12:33.710Z",
+      "pickedUpAt": "2026-05-18T04:12:33.710Z"
+    },
+    {
+      "id": "trx-1779076923797",
+      "transactionNumber": "LDY-20260518-2302",
+      "customerId": "cus-1779076899722",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779076899722",
+        "name": "Yessica",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T04:01:29.216Z",
+        "updatedAt": "2026-05-18T04:01:29.216Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "346b9870-843f-41c0-9e34-fed7b83974fb",
+          "serviceId": "srv-2",
+          "serviceName": "Cuci Setrika",
+          "unit": "KG",
+          "quantity": 5,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 45000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-1779077170279",
+          "transactionId": "trx-1779076923797",
+          "paymentMethod": "CASH",
+          "amount": 45000,
+          "paidAt": "2026-05-18T04:06:10.279Z",
+          "referenceNumber": "",
+          "notes": "Pelunasan saat pengambilan laundry",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 45000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 45000,
+      "paidAmount": 45000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PICKED_UP",
+      "estimatedDoneAt": "2026-05-20T04:02:01.694Z",
+      "notes": "",
+      "createdAt": "2026-05-18T04:02:01.694Z",
+      "updatedAt": "2026-05-18T04:06:10.291Z",
+      "pickedUpAt": "2026-05-18T04:06:10.291Z"
+    },
+    {
+      "id": "trx-1779075090477",
+      "transactionNumber": "LDY-20260518-2412",
+      "customerId": "cus-1779075074902",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1779075074902",
+        "name": "Haikal",
+        "phone": "081364804287",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-18T03:30:59.740Z",
+        "updatedAt": "2026-05-18T03:30:59.740Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "be9cfcfa-6e3e-4da4-afc5-9b1d465109bd",
+          "serviceId": "srv-1",
+          "serviceName": "Cuci Kering",
+          "unit": "KG",
+          "quantity": 100,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 700000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "draft-payment",
+          "transactionId": "draft",
+          "paymentMethod": "CASH",
+          "amount": 700000,
+          "paidAt": "2026-05-18T03:31:29.333Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 700000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 700000,
+      "paidAmount": 700000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "PROCESSING",
+      "estimatedDoneAt": "2026-05-20T03:31:29.333Z",
+      "notes": "",
+      "createdAt": "2026-05-18T03:31:29.333Z",
+      "updatedAt": "2026-05-18T04:10:52.965Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp-1779075042079",
+      "date": "2026-05-18T00:00:00.000Z",
+      "category": "Pewangi",
+      "description": "",
+      "amount": 30000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
+      "id": "exp-1779075036369",
+      "date": "2026-05-18T00:00:00.000Z",
+      "category": "Deterjen",
+      "description": "",
+      "amount": 50000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
+      "id": "exp-1779075031078",
+      "date": "2026-05-18T00:00:00.000Z",
+      "category": "Listrik",
+      "description": "",
+      "amount": 300000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    }
+  ],
+  "settings": {
+    "storeName": "Yessi Laundry",
+    "address": "Jl. Boulevard Raya No. 17, Makassar",
+    "whatsapp": "0812-3456-7890",
+    "receiptWidth": 58,
+    "taxRate": 0,
+    "qrisUrl": "/uploads/qris/qris-1778986372647.jpeg"
+  }
+}
