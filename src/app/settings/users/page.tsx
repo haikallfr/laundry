@@ -4,10 +4,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { OwnerOnlyGuard } from "@/components/layout/RoleGuards";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { UserManager } from "@/components/forms/UserManager";
-import { readStore } from "@/lib/store";
+import { readUsers } from "@/lib/store";
 
 export default async function UsersSettingsPage() {
-  const { users } = await readStore();
+  const users = await readUsers();
   return (
     <OwnerOnlyGuard>
       <AppShell>

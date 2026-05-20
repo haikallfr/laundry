@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ReceiptPreview } from "@/components/receipt/ReceiptPrintLayout";
 import { formatDate, formatRupiah, laundryStatusLabel, paymentStatusLabel } from "@/lib/utils";
-import { readStore } from "@/lib/store";
+import { readSettings, readTransactionById } from "@/lib/store";
 import { TransactionStatusActions } from "@/components/forms/TransactionStatusActions";
 import { TransactionPaymentActions } from "@/components/forms/TransactionPaymentActions";
 
 export default async function TransactionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { settings, transactions } = await readStore();
-  const transaction = transactions.find((trx) => trx.id === id) ?? transactions[0];
+  const [settings, transaction] = await Promise.all([readSettings(), readTransactionById(id)]);
+  if (!transaction) return null;
   return (
     <AppShell>
       <SectionHeader title={transaction.transactionNumber} description="Detail transaksi, status pembayaran, update laundry, dan re-print nota." action={<Link href={`/print/receipt/${transaction.id}?autoprint=1`}><Button><Printer className="h-4 w-4" />Print nota</Button></Link>} />

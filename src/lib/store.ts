@@ -112,6 +112,205 @@ export async function readUserByEmail(email: string) {
   return getPrisma().user.findUnique({ where: { email } }).then((user) => user ? toUser(user) : null);
 }
 
+export async function readSettings(): Promise<StoreSettings> {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.settings;
+  }
+
+  const storeSetting = await getPrisma().setting.findUnique({ where: { key: "store" } });
+  return (storeSetting?.value as StoreSettings | null) ?? settings;
+}
+
+export async function readServices() {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.services;
+  }
+
+  const rows = await getPrisma().service.findMany({
+    orderBy: [{ isActive: "desc" }, { category: "asc" }, { name: "asc" }]
+  });
+  return rows.map(toService);
+}
+
+export async function readUsers() {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.users;
+  }
+
+  const rows = await getPrisma().user.findMany({ orderBy: { createdAt: "asc" } });
+  return rows.map(toUser);
+}
+
+export async function readExpenses() {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.expenses;
+  }
+
+  const rows = await getPrisma().expense.findMany({
+    take: 500,
+    orderBy: { date: "desc" }
+  });
+  return rows.map(toExpense);
+}
+
+export async function readTransactions(limit = 500) {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.transactions.slice(0, limit);
+  }
+
+  const rows = await getPrisma().transaction.findMany({
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    include: {
+      customer: true,
+      cashier: true,
+      items: { orderBy: { createdAt: "asc" } },
+      payments: { orderBy: { paidAt: "asc" } }
+    }
+  });
+  return rows.map(toTransaction);
+}
+
+export async function readTransactionById(id: string) {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return data.transactions.find((transaction) => transaction.id === id) ?? null;
+  }
+
+  const row = await getPrisma().transaction.findUnique({
+    where: { id },
+    include: {
+      customer: true,
+      cashier: true,
+      items: { orderBy: { createdAt: "asc" } },
+      payments: { orderBy: { paidAt: "asc" } }
+    }
+  });
+  return row ? toTransaction(row) : null;
+}
+
+export async function readCashierData() {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return {
+      customers: data.customers,
+      services: data.services,
+      settings: data.settings,
+      users: data.users
+    };
+  }
+
+  const prisma = getPrisma();
+  const [dbCustomers, dbServices, storeSetting, dbUsers] = await Promise.all([
+    prisma.customer.findMany({ take: 300, orderBy: { updatedAt: "desc" } }),
+    prisma.service.findMany({ where: { isActive: true }, orderBy: [{ category: "asc" }, { name: "asc" }] }),
+    prisma.setting.findUnique({ where: { key: "store" } }),
+    prisma.user.findMany({ where: { status: "ACTIVE" }, orderBy: { createdAt: "asc" } })
+  ]);
+
+  return {
+    customers: dbCustomers.map(toCustomer),
+    services: dbServices.map(toService),
+    settings: (storeSetting?.value as StoreSettings | null) ?? settings,
+    users: dbUsers.map(toUser)
+  };
+}
+
+export async function readCustomersData() {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return { customers: data.customers, transactions: data.transactions };
+  }
+
+  const [dbCustomers, dbTransactions] = await Promise.all([
+    getPrisma().customer.findMany({ take: 500, orderBy: { updatedAt: "desc" } }),
+    getPrisma().transaction.findMany({
+      take: 700,
+      orderBy: { createdAt: "desc" },
+      include: {
+        customer: true,
+        cashier: true,
+        items: { orderBy: { createdAt: "asc" } },
+        payments: { orderBy: { paidAt: "asc" } }
+      }
+    })
+  ]);
+
+  return {
+    customers: dbCustomers.map(toCustomer),
+    transactions: dbTransactions.map(toTransaction)
+  };
+}
+
+export async function readCustomerDetailData(id: string) {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    const customer = data.customers.find((row) => row.id === id) ?? data.customers[0];
+    return {
+      customer,
+      transactions: data.transactions.filter((transaction) => transaction.customerId === customer?.id)
+    };
+  }
+
+  const [customer, transactionRows] = await Promise.all([
+    getPrisma().customer.findUnique({ where: { id } }),
+    getPrisma().transaction.findMany({
+      where: { customerId: id },
+      take: 300,
+      orderBy: { createdAt: "desc" },
+      include: {
+        customer: true,
+        cashier: true,
+        items: { orderBy: { createdAt: "asc" } },
+        payments: { orderBy: { paidAt: "asc" } }
+      }
+    })
+  ]);
+
+  return {
+    customer: customer ? toCustomer(customer) : null,
+    transactions: transactionRows.map(toTransaction)
+  };
+}
+
+export async function readReportData(limit = 1000) {
+  if (!hasRelationalStore()) {
+    const data = await readStore();
+    return {
+      expenses: data.expenses,
+      settings: data.settings,
+      transactions: data.transactions.slice(0, limit)
+    };
+  }
+
+  const prisma = getPrisma();
+  const [dbExpenses, storeSetting, dbTransactions] = await Promise.all([
+    prisma.expense.findMany({ take: 500, orderBy: { date: "desc" } }),
+    prisma.setting.findUnique({ where: { key: "store" } }),
+    prisma.transaction.findMany({
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        customer: true,
+        cashier: true,
+        items: { orderBy: { createdAt: "asc" } },
+        payments: { orderBy: { paidAt: "asc" } }
+      }
+    })
+  ]);
+
+  return {
+    expenses: dbExpenses.map(toExpense),
+    settings: (storeSetting?.value as StoreSettings | null) ?? settings,
+    transactions: dbTransactions.map(toTransaction)
+  };
+}
+
 export async function readShellData(user: User): Promise<ShellData> {
   if (!hasRelationalStore()) {
     const { settings, transactions } = await readStore();

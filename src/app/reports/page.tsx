@@ -10,11 +10,11 @@ import { ReportFilter } from "@/components/forms/ReportFilter";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { calculateFinanceSummary, filterTransactionsByPeriod, revenueDailySeries, resolvePeriod, servicePopularity } from "@/lib/finance";
-import { readStore } from "@/lib/store";
+import { readReportData } from "@/lib/store";
 import { formatRupiah } from "@/lib/utils";
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const { expenses, transactions } = await readStore();
+  const { expenses, transactions } = await readReportData();
   const resolved = resolvePeriod(await searchParams);
   const scopedTransactions = filterTransactionsByPeriod(transactions, resolved.period);
   const summary = calculateFinanceSummary(transactions, expenses, resolved.period);

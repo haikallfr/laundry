@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "Aplikasi kasir laundry profesional"
 };
 
+export const preferredRegion = "bom1";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" suppressHydrationWarning>

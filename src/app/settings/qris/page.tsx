@@ -4,10 +4,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { OwnerOnlyGuard } from "@/components/layout/RoleGuards";
 import { QrisSettingsClient } from "@/components/forms/QrisSettingsClient";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { readStore } from "@/lib/store";
+import { readSettings } from "@/lib/store";
 
 export default async function QrisSettingsPage() {
-  const { settings } = await readStore();
+  const settings = await readSettings();
   return (
     <OwnerOnlyGuard>
       <AppShell>

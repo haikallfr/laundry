@@ -11,10 +11,10 @@ import { StatCard } from "@/components/ui/StatCard";
 import { DashboardSidePanel } from "@/components/ui/DashboardSidePanel";
 import { DashboardTransactionCards } from "@/components/tables/DashboardTransactionCards";
 import { calculateFinanceSummary, filterTransactionsByPeriod, revenueDailySeries, resolvePeriod, servicePopularity } from "@/lib/finance";
-import { readStore } from "@/lib/store";
+import { readReportData } from "@/lib/store";
 
 export default async function DashboardOwnerPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const { expenses, settings, transactions } = await readStore();
+  const { expenses, settings, transactions } = await readReportData();
   const params = await searchParams;
   const resolved = resolvePeriod(params);
   const scopedTransactions = filterTransactionsByPeriod(transactions, resolved.period);

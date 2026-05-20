@@ -4,10 +4,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { OwnerOnlyGuard } from "@/components/layout/RoleGuards";
 import { ServiceManager } from "@/components/forms/ServiceManager";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { readStore } from "@/lib/store";
+import { readServices } from "@/lib/store";
 
 export default async function ServicesPage() {
-  const { services } = await readStore();
+  const services = await readServices();
   return (
     <OwnerOnlyGuard>
       <AppShell>

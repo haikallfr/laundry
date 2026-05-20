@@ -4,14 +4,13 @@ import { AppShell } from "@/components/layout/AppShell";
 import { TransactionTable } from "@/components/tables/TransactionTable";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { formatRupiah } from "@/lib/utils";
-import { readStore } from "@/lib/store";
+import { readCustomerDetailData } from "@/lib/store";
 import { CustomerProfileForm } from "@/components/forms/CustomerProfileForm";
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { customers, transactions } = await readStore();
-  const customer = customers.find((row) => row.id === id) ?? customers[0];
-  const rows = transactions.filter((trx) => trx.customerId === customer.id);
+  const { customer, transactions: rows } = await readCustomerDetailData(id);
+  if (!customer) return null;
   return (
     <AppShell>
       <SectionHeader title={customer.name} description={`${customer.phone} - ${customer.address || "Alamat belum diisi"}`} />
