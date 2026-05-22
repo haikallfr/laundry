@@ -39,33 +39,13 @@
   ],
   "services": [
     {
-      "id": "srv-1",
-      "name": "Cuci Kering",
-      "category": "Reguler",
-      "unit": "KG",
-      "price": 7000,
-      "cost": 0,
-      "estimatedDuration": "2 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-2",
-      "name": "Cuci Setrika",
+      "id": "srv-1779324773540",
+      "name": "Laundry VIP",
       "category": "Reguler",
       "unit": "KG",
       "price": 9000,
       "cost": 0,
-      "estimatedDuration": "2 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-3",
-      "name": "Setrika Saja",
-      "category": "Reguler",
-      "unit": "KG",
-      "price": 6000,
-      "cost": 0,
-      "estimatedDuration": "1 hari",
+      "estimatedDuration": "3 Jam",
       "isActive": true
     },
     {
@@ -73,59 +53,9 @@
       "name": "Laundry Express",
       "category": "Express",
       "unit": "KG",
-      "price": 15000,
+      "price": 7000,
       "cost": 0,
       "estimatedDuration": "8 jam",
-      "isActive": true
-    },
-    {
-      "id": "srv-5",
-      "name": "Bed Cover",
-      "category": "Household",
-      "unit": "PCS",
-      "price": 35000,
-      "cost": 0,
-      "estimatedDuration": "3 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-6",
-      "name": "Sepatu",
-      "category": "Special Care",
-      "unit": "PCS",
-      "price": 45000,
-      "cost": 0,
-      "estimatedDuration": "3 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-7",
-      "name": "Karpet",
-      "category": "Household",
-      "unit": "METER",
-      "price": 18000,
-      "cost": 0,
-      "estimatedDuration": "4 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-8",
-      "name": "Boneka",
-      "category": "Special Care",
-      "unit": "PCS",
-      "price": 25000,
-      "cost": 0,
-      "estimatedDuration": "2 hari",
-      "isActive": true
-    },
-    {
-      "id": "srv-9",
-      "name": "Jas",
-      "category": "Premium",
-      "unit": "PCS",
-      "price": 55000,
-      "cost": 0,
-      "estimatedDuration": "3 hari",
       "isActive": true
     }
   ],
@@ -733,29 +663,68 @@
   ],
   "expenses": [
     {
+      "id": "exp-1779326124851",
+      "date": "2026-05-21T00:00:00.000Z",
+      "category": "Gas",
+      "description": "",
+      "amount": 80000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
+      "id": "exp-1779321071385",
+      "date": "2026-05-20T00:00:00.000Z",
+      "category": "Maintenance mesin",
+      "description": "",
+      "amount": 100000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
+      "id": "exp-1779321052115",
+      "date": "2026-05-20T00:00:00.000Z",
+      "category": "Plastik",
+      "description": "",
+      "amount": 100000,
+      "materialCoverageKg": 146,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
+      "id": "exp-1779320295914",
+      "date": "2026-05-20T00:00:00.000Z",
+      "category": "Gaji karyawan",
+      "description": "",
+      "amount": 960000,
+      "paymentMethod": "CASH",
+      "createdBy": "usr-owner"
+    },
+    {
       "id": "exp-1779075042079",
       "date": "2026-05-18T00:00:00.000Z",
       "category": "Pewangi",
       "description": "",
-      "amount": 30000,
+      "amount": 210000,
       "paymentMethod": "CASH",
-      "createdBy": "usr-owner"
+      "createdBy": "usr-owner",
+      "materialCoverageKg": 400
     },
     {
       "id": "exp-1779075036369",
       "date": "2026-05-18T00:00:00.000Z",
       "category": "Deterjen",
       "description": "",
-      "amount": 50000,
+      "amount": 150000,
       "paymentMethod": "CASH",
-      "createdBy": "usr-owner"
+      "createdBy": "usr-owner",
+      "materialCoverageKg": 200
     },
     {
       "id": "exp-1779075031078",
       "date": "2026-05-18T00:00:00.000Z",
       "category": "Listrik",
       "description": "",
-      "amount": 300000,
+      "amount": 420000,
       "paymentMethod": "CASH",
       "createdBy": "usr-owner"
     }

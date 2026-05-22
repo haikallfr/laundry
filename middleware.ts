@@ -3,6 +3,7 @@ import { authCookieName, canAccessPath, verifyToken } from "@/lib/auth-edge";
 
 const protectedPrefixes = [
   "/dashboard-owner",
+  "/capital-analysis",
   "/cashier",
   "/assistant",
   "/laundry-management",

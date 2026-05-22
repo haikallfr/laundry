@@ -1,0 +1,76 @@
+{
+  "items": [
+    {
+      "id": "cap-1779320693702",
+      "name": "Tukang",
+      "category": "Lainnya",
+      "amount": 840000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T23:44:53.702Z"
+    },
+    {
+      "id": "cap-1779320684202",
+      "name": "Tambah daya",
+      "category": "Lainnya",
+      "amount": 1200000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T23:44:44.202Z"
+    },
+    {
+      "id": "cap-1779320674885",
+      "name": "Perintilan",
+      "category": "Renovasi",
+      "amount": 1000000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T23:44:34.885Z"
+    },
+    {
+      "id": "cap-1779320663336",
+      "name": "Pasant Int",
+      "category": "Renovasi",
+      "amount": 500000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T23:44:23.336Z"
+    },
+    {
+      "id": "cap-1779320648619",
+      "name": "Meja",
+      "category": "Renovasi",
+      "amount": 1000000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T23:44:08.619Z"
+    },
+    {
+      "id": "cap-washer-1",
+      "name": "Dryer + Setrika",
+      "category": "Mesin",
+      "amount": 17880000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T12:40:41.903Z",
+      "notes": "Isi harga pembelian mesin cuci"
+    },
+    {
+      "id": "cap-dryer-1",
+      "name": "Mesin Wash",
+      "category": "Mesin",
+      "amount": 10378000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T12:40:41.903Z",
+      "notes": "Isi jika sudah beli dryer"
+    },
+    {
+      "id": "cap-renovation",
+      "name": "Total Buku",
+      "category": "Lainnya",
+      "amount": 11913000,
+      "quantity": 1,
+      "purchasedAt": "2026-05-20T12:40:41.903Z",
+      "notes": "Listrik, air, meja, rak, signage"
+    }
+  ],
+  "assumptions": {
+    "workingDaysPerMonth": 30,
+    "targetDailyVolume": 150,
+    "primaryServiceId": "srv-1"
+  }
+}

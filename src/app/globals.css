@@ -93,8 +93,11 @@ textarea {
 }
 
 @media print {
+  html,
   body {
     background: #fff !important;
+    width: 58mm !important;
+    min-width: 58mm !important;
   }
 
   .no-print {
@@ -102,21 +105,26 @@ textarea {
   }
 
   .print-shell {
+    width: 58mm !important;
+    min-width: 58mm !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
   .receipt-paper {
     width: 58mm;
+    max-width: 58mm;
     margin: 0;
     box-shadow: none !important;
   }
 
   .receipt-paper[data-width="80"] {
     width: 80mm;
+    max-width: 80mm;
   }
 
   @page {
-    margin: 3mm;
+    size: 58mm auto;
+    margin: 0;
   }
 }

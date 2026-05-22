@@ -1,7 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cache } from "react";
-import type { Customer, Expense, LaundryService, StoreSettings, Transaction, User } from "@/types";
+import type { CapitalPlan, Customer, Expense, LaundryService, StoreSettings, Transaction, User } from "@/types";
 import { customers, expenses, services, settings, transactions, users } from "@/lib/mock-data";
 import { getPrisma } from "@/lib/prisma";
 
@@ -21,6 +21,7 @@ export type ShellData = {
 
 const dataDir = path.join(process.cwd(), "data");
 const dataFile = path.join(dataDir, "laundry-pos.json");
+const capitalPlanFile = path.join(dataDir, "capital-plan.json");
 const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 const supabaseTable = process.env.SUPABASE_STORE_TABLE || "app_store";
@@ -43,6 +44,21 @@ function seedData(): AppData {
     transactions,
     expenses,
     settings
+  };
+}
+
+function defaultCapitalPlan(): CapitalPlan {
+  return {
+    items: [
+      { id: "cap-washer-1", name: "Mesin cuci", category: "Mesin", amount: 0, quantity: 1, purchasedAt: new Date().toISOString(), notes: "Isi harga pembelian mesin cuci" },
+      { id: "cap-dryer-1", name: "Mesin pengering", category: "Mesin", amount: 0, quantity: 1, purchasedAt: new Date().toISOString(), notes: "Isi jika sudah beli dryer" },
+      { id: "cap-renovation", name: "Renovasi / instalasi", category: "Setup", amount: 0, quantity: 1, purchasedAt: new Date().toISOString(), notes: "Listrik, air, meja, rak, signage" }
+    ],
+    assumptions: {
+      workingDaysPerMonth: 26,
+      targetDailyVolume: 30,
+      primaryServiceId: "srv-2"
+    }
   };
 }
 
@@ -311,6 +327,76 @@ export async function readReportData(limit = 1000) {
   };
 }
 
+export async function readCapitalPlan(): Promise<CapitalPlan> {
+  if (!hasRelationalStore()) {
+    try {
+      const raw = await readFile(capitalPlanFile, "utf8");
+      return normalizeCapitalPlan(JSON.parse(raw));
+    } catch {
+      const seeded = defaultCapitalPlan();
+      await writeCapitalPlan(seeded);
+      return seeded;
+    }
+  }
+
+  const row = await getPrisma().setting.findUnique({ where: { key: "capital-plan" } });
+  return normalizeCapitalPlan(row?.value);
+}
+
+export async function writeCapitalPlan(plan: CapitalPlan) {
+  const normalized = normalizeCapitalPlan(plan);
+
+  if (!hasRelationalStore()) {
+    await mkdir(dataDir, { recursive: true });
+    const tmp = `${capitalPlanFile}.tmp`;
+    await writeFile(tmp, JSON.stringify(normalized, null, 2));
+    await rename(tmp, capitalPlanFile);
+    return normalized;
+  }
+
+  await getPrisma().setting.upsert({
+    where: { key: "capital-plan" },
+    update: { value: normalized },
+    create: { key: "capital-plan", value: normalized }
+  });
+  return normalized;
+}
+
+function normalizeCapitalPlan(value: unknown): CapitalPlan {
+  const fallback = defaultCapitalPlan();
+  if (!value || typeof value !== "object") return fallback;
+
+  const plan = value as Partial<CapitalPlan>;
+  const rawAssumptions = (plan.assumptions ?? fallback.assumptions) as Partial<CapitalPlan["assumptions"]> & {
+    targetDailyRevenue?: number;
+    variableCostPercent?: number;
+    monthlyFixedCost?: number;
+    sellingPrice?: number;
+    fixedCosts?: Record<string, number>;
+  };
+  const legacySellingPrice = Number(rawAssumptions.sellingPrice || 9000);
+  const legacyTargetDailyVolume = rawAssumptions.targetDailyRevenue ? Math.max(1, Math.round(Number(rawAssumptions.targetDailyRevenue) / Math.max(1, legacySellingPrice))) : fallback.assumptions.targetDailyVolume;
+
+  return {
+    items: Array.isArray(plan.items)
+      ? plan.items.map((item) => ({
+          id: String(item.id || `cap-${Date.now()}`),
+          name: String(item.name || "Modal"),
+          category: String(item.category || "Lainnya"),
+          amount: Number(item.amount || 0),
+          quantity: Number(item.quantity || 1),
+          purchasedAt: item.purchasedAt || new Date().toISOString(),
+          notes: item.notes || undefined
+        }))
+      : fallback.items,
+    assumptions: {
+      workingDaysPerMonth: Number(rawAssumptions.workingDaysPerMonth || fallback.assumptions.workingDaysPerMonth),
+      targetDailyVolume: Number(rawAssumptions.targetDailyVolume || legacyTargetDailyVolume),
+      primaryServiceId: rawAssumptions.primaryServiceId || fallback.assumptions.primaryServiceId
+    }
+  };
+}
+
 export async function readShellData(user: User): Promise<ShellData> {
   if (!hasRelationalStore()) {
     const { settings, transactions } = await readStore();
@@ -405,6 +491,21 @@ function asNumber(value: unknown) {
   return Number(value ?? 0);
 }
 
+const materialCoveragePattern = /\s*\[materialCoverageKg:([0-9]+(?:\.[0-9]+)?)\]\s*$/;
+
+function decodeExpenseDescription(description: string) {
+  const match = description.match(materialCoveragePattern);
+  return {
+    description: description.replace(materialCoveragePattern, ""),
+    materialCoverageKg: match ? Number(match[1]) : undefined
+  };
+}
+
+function encodeExpenseDescription(description: string, materialCoverageKg?: number) {
+  const clean = description.replace(materialCoveragePattern, "");
+  return materialCoverageKg && materialCoverageKg > 0 ? `${clean} [materialCoverageKg:${materialCoverageKg}]` : clean;
+}
+
 function toUser(row: {
   id: string;
   name: string;
@@ -475,12 +576,14 @@ function toExpense(row: {
   proofImage: string | null;
   createdBy: string;
 }): Expense {
+  const decoded = decodeExpenseDescription(row.description);
   return {
     id: row.id,
     date: row.date.toISOString(),
     category: row.category,
-    description: row.description,
+    description: decoded.description,
     amount: asNumber(row.amount),
+    materialCoverageKg: decoded.materialCoverageKg,
     paymentMethod: row.paymentMethod,
     proofImage: row.proofImage ?? undefined,
     createdBy: row.createdBy
@@ -657,7 +760,7 @@ async function writePrismaStore(data: AppData) {
           id: expense.id,
           date: asDate(expense.date) ?? new Date(),
           category: expense.category,
-          description: expense.description,
+          description: encodeExpenseDescription(expense.description, expense.materialCoverageKg),
           amount: expense.amount,
           paymentMethod: expense.paymentMethod,
           proofImage: expense.proofImage ?? null,

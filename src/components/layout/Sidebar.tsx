@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ClipboardList, CreditCard, FileText, Home, ReceiptText, Settings, Shirt, UserCog, Users, WalletCards } from "lucide-react";
+import { BarChart3, Calculator, ClipboardList, CreditCard, FileText, Home, ReceiptText, Settings, Shirt, UserCog, Users, WalletCards } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/types";
 
@@ -14,6 +14,7 @@ const nav = [
   { href: "/customers", label: "Pelanggan", icon: Users },
   { href: "/services", label: "Layanan", icon: Shirt, ownerOnly: true },
   { href: "/expenses", label: "Pengeluaran", icon: WalletCards, ownerOnly: true },
+  { href: "/capital-analysis", label: "Analisis Modal", icon: Calculator, ownerOnly: true },
   { href: "/reports", label: "Laporan", icon: BarChart3, ownerOnly: true },
   { href: "/settings/store", label: "Info Toko", icon: Settings, ownerOnly: true },
   { href: "/settings/qris", label: "QRIS", icon: FileText, ownerOnly: true },

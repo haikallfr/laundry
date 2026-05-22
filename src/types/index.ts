@@ -92,6 +92,7 @@ export type Expense = {
   category: string;
   description: string;
   amount: number;
+  materialCoverageKg?: number;
   paymentMethod: PaymentMethod;
   proofImage?: string;
   createdBy: string;
@@ -123,4 +124,25 @@ export type FinanceSummary = {
   repeatCustomers: number;
   cashInByMethod: Record<PaymentMethod, number>;
   outstandingPayment: number;
+};
+
+export type CapitalItem = {
+  id: string;
+  name: string;
+  category: string;
+  amount: number;
+  quantity?: number;
+  purchasedAt: string;
+  notes?: string;
+};
+
+export type CapitalAssumptions = {
+  workingDaysPerMonth: number;
+  targetDailyVolume: number;
+  primaryServiceId?: string;
+};
+
+export type CapitalPlan = {
+  items: CapitalItem[];
+  assumptions: CapitalAssumptions;
 };
