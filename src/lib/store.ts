@@ -704,7 +704,6 @@ async function writePrismaStore(data: AppData) {
     await tx.receiptTemplate.deleteMany();
     await tx.service.deleteMany();
     await tx.customer.deleteMany();
-    await tx.setting.deleteMany();
     await tx.user.deleteMany();
 
     await tx.user.createMany({
@@ -747,8 +746,10 @@ async function writePrismaStore(data: AppData) {
       skipDuplicates: true
     });
 
-    await tx.setting.create({
-      data: {
+    await tx.setting.upsert({
+      where: { key: "store" },
+      update: { value: data.settings },
+      create: {
         key: "store",
         value: data.settings
       }
