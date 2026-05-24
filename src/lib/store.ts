@@ -536,7 +536,7 @@ function toCustomer(row: {
   return {
     id: row.id,
     name: row.name,
-    phone: row.phone,
+    phone: row.phone.startsWith("__NO_PHONE__:") ? "" : row.phone,
     address: row.address ?? undefined,
     notes: row.notes ?? undefined,
     createdAt: row.createdAt.toISOString(),

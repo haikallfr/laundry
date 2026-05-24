@@ -172,6 +172,7 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
   const [method, setMethod] = useState<PaymentChoice | "">("");
   const [qrisOpen, setQrisOpen] = useState(false);
   const [savedTransaction, setSavedTransaction] = useState<Transaction | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
   const discountValue = Number(discount || 0);
@@ -232,12 +233,22 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
   const canFinishPayment = canGoToPayment && Boolean(method) && (method === "UNPAID" || method === "QRIS" || paidAmountValue > 0 || grandTotal === 0);
 
   async function finishPayment() {
-    if (!customer.name.trim() || items.length === 0 || items.some((item) => item.quantity <= 0)) return;
+    if (isSaving || !customer.name.trim() || items.length === 0 || items.some((item) => item.quantity <= 0)) return;
     const number = generateTransactionNumber(Math.floor(Math.random() * 8999) + 1000);
     const saved = { ...transaction, id: `trx-${Date.now()}`, transactionNumber: number };
-    setSavedTransaction(saved);
-    await fetch("/api/transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(saved) });
-    setStep("done");
+    setIsSaving(true);
+
+    try {
+      const response = await fetch("/api/transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(saved) });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(payload?.message || "Transaksi gagal disimpan.");
+      setSavedTransaction((payload?.data as Transaction | undefined) ?? saved);
+      setStep("done");
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Transaksi gagal disimpan.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function sendWhatsApp() {
@@ -251,7 +262,7 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
   }
 
   function openReceipt(transactionId: string) {
-    window.location.assign(`/print/receipt/${transactionId}?autoprint=1`);
+    window.open(`/print/receipt/${transactionId}`, "_blank");
   }
 
   function getWhatsAppUrl(transactionData: Transaction) {
@@ -487,7 +498,7 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
             <div className="border-t border-line pt-3 text-lg font-black"><div className="flex justify-between"><span>Total</span><span>{formatRupiah(grandTotal)}</span></div></div>
           </div>
           <div className="mt-4 flex flex-col gap-2">
-            <Button disabled={!canFinishPayment} onClick={finishPayment}><CheckCircle2 className="h-4 w-4" />Simpan transaksi</Button>
+            <Button disabled={!canFinishPayment || isSaving} onClick={finishPayment}><CheckCircle2 className="h-4 w-4" />{isSaving ? "Menyimpan..." : "Simpan transaksi"}</Button>
             <Button variant="secondary" onClick={() => setStep("items")}><ArrowLeft className="h-4 w-4" />Kembali item</Button>
           </div>
         </section>
