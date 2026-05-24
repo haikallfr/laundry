@@ -96,8 +96,8 @@ textarea {
   html,
   body {
     background: #fff !important;
-    width: 58mm !important;
-    min-width: 58mm !important;
+    width: auto !important;
+    min-width: 0 !important;
   }
 
   .no-print {
@@ -124,7 +124,6 @@ textarea {
   }
 
   @page {
-    size: 58mm auto;
     margin: 0;
   }
 }

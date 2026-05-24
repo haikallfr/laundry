@@ -9,11 +9,18 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
   const [width, setWidth] = useState<58 | 80>(settings.receiptWidth);
   const [bluetoothStatus, setBluetoothStatus] = useState("");
   const [isBluetoothPrinting, setIsBluetoothPrinting] = useState(false);
+  const [canUseBluetooth, setCanUseBluetooth] = useState(false);
 
   useEffect(() => {
+    setCanUseBluetooth(Boolean((navigator as BluetoothNavigator).bluetooth));
     const search = new URLSearchParams(window.location.search);
-    if (search.get("autoprint") === "1") setTimeout(() => window.print(), 350);
+    if (search.get("autoprint") === "1") setTimeout(openPrintDialog, 500);
   }, []);
+
+  function openPrintDialog() {
+    window.focus();
+    setTimeout(() => window.print(), 50);
+  }
 
   async function printViaBluetooth() {
     setBluetoothStatus("");
@@ -45,10 +52,12 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
   return (
     <div className="print-shell min-h-screen bg-slate-100 p-6">
       <div className="no-print mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={() => window.print()}>Print Nota</Button>
-        <Button variant="secondary" onClick={printViaBluetooth} disabled={isBluetoothPrinting}>
-          {isBluetoothPrinting ? "Mengirim..." : "Bluetooth Langsung"}
-        </Button>
+        <Button onClick={openPrintDialog}>Print Nota</Button>
+        {canUseBluetooth ? (
+          <Button variant="secondary" onClick={printViaBluetooth} disabled={isBluetoothPrinting}>
+            {isBluetoothPrinting ? "Mengirim..." : "Bluetooth Langsung"}
+          </Button>
+        ) : null}
         <Button variant="secondary" onClick={() => setWidth(58)}>58mm</Button>
         <Button variant="secondary" onClick={() => setWidth(80)}>80mm</Button>
       </div>
