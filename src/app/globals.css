@@ -79,12 +79,15 @@ textarea {
 }
 
 .receipt-paper {
-  width: 58mm;
-  color: #000;
-  background: #fff;
-  font-family: Arial, "Courier New", monospace;
+  width: 200px;
+  max-width: 58mm;
+  margin-left: 0;
+  padding-left: 0;
+  color: #000000;
+  background: #ffffff;
+  font-family: monospace, sans-serif;
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.24;
   -webkit-font-smoothing: none;
   print-color-adjust: exact;
@@ -94,31 +97,48 @@ textarea {
 }
 
 .receipt-paper[data-width="80"] {
-  width: 80mm;
+  width: 280px;
+  max-width: 80mm;
   font-size: 10px;
 }
 
 .receipt-paper .receipt-title {
-  font-size: 12px;
-  font-weight: 900;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .receipt-paper .receipt-line {
   border-color: #000 !important;
 }
 
+.receipt-paper .font-bold,
+.receipt-paper .font-black {
+  font-weight: 600 !important;
+}
+
 .receipt-paper .receipt-row,
 .receipt-paper .receipt-item-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18mm, auto);
-  gap: 1.5mm;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
   align-items: start;
+  width: 100%;
+}
+
+.receipt-paper .receipt-row-label,
+.receipt-paper .receipt-item-label {
+  min-width: 0;
+  padding-left: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .receipt-paper .receipt-row-value,
 .receipt-paper .receipt-item-value {
   min-width: 0;
+  max-width: 118px;
   text-align: right;
+  flex-shrink: 1;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -136,25 +156,27 @@ textarea {
   }
 
   .print-shell {
-    width: 54mm !important;
-    min-width: 54mm !important;
+    width: 200px !important;
+    min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
   .receipt-paper {
-    width: 54mm;
-    max-width: 54mm;
-    margin: 0;
-    padding: 1mm !important;
+    width: 200px !important;
+    max-width: 58mm !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    padding-left: 0 !important;
     box-shadow: none !important;
-    color: #000 !important;
-    font-weight: 800 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
   }
 
   .receipt-paper[data-width="80"] {
-    width: 80mm;
-    max-width: 80mm;
+    width: 280px !important;
+    max-width: 80mm !important;
   }
 
   @page {
