@@ -235,7 +235,14 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
   async function finishPayment() {
     if (isSaving || !customer.name.trim() || items.length === 0 || items.some((item) => item.quantity <= 0)) return;
     const number = generateTransactionNumber(Math.floor(Math.random() * 8999) + 1000);
-    const saved = { ...transaction, id: `trx-${Date.now()}`, transactionNumber: number };
+    const transactionId = `trx-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+    const saved = {
+      ...transaction,
+      id: transactionId,
+      transactionNumber: number,
+      items: transaction.items.map((item) => ({ ...item, id: crypto.randomUUID() })),
+      payments: transaction.payments.map((payment) => ({ ...payment, id: `pay-${crypto.randomUUID()}`, transactionId }))
+    };
     setIsSaving(true);
 
     try {

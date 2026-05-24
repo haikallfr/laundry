@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { getPrisma } from "@/lib/prisma";
 import { hasRelationalStore, readStore, toTransaction, updateStore } from "@/lib/store";
 
@@ -28,6 +29,8 @@ export async function POST(request: Request) {
       const prisma = getPrisma();
       const customerPhone = body.customer?.phone?.trim();
       const customerPhoneForDb = customerPhone || `__NO_PHONE__:${body.customer?.id ?? body.customerId}`;
+      const transactionId = `trx-${Date.now()}-${randomUUID().slice(0, 8)}`;
+      const savedBody = { ...body, id: transactionId };
 
       if (body.customer) {
         const existingCustomer = await prisma.customer.findFirst({
@@ -67,7 +70,7 @@ export async function POST(request: Request) {
 
       await prisma.transaction.create({
         data: {
-          id: body.id,
+          id: transactionId,
           transactionNumber: body.transactionNumber,
           customerId: body.customerId,
           cashierId: body.cashierId,
@@ -86,7 +89,7 @@ export async function POST(request: Request) {
           updatedAt: body.updatedAt ? new Date(body.updatedAt) : new Date(),
           items: {
             create: body.items.map((item: any) => ({
-              id: item.id,
+              id: `item-${randomUUID()}`,
               serviceId: item.serviceId || null,
               serviceName: item.serviceName,
               unit: item.unit,
@@ -99,7 +102,7 @@ export async function POST(request: Request) {
           },
           payments: {
             create: body.payments.map((payment: any) => ({
-              id: payment.id,
+              id: `pay-${randomUUID()}`,
               paymentMethod: payment.paymentMethod,
               amount: payment.amount,
               paidAt: payment.paidAt ? new Date(payment.paidAt) : new Date(),
@@ -111,7 +114,7 @@ export async function POST(request: Request) {
         }
       });
 
-      return NextResponse.json({ data: body, audit: { action: "TRANSACTION_CREATED", at: new Date().toISOString() } }, { status: 201 });
+      return NextResponse.json({ data: savedBody, audit: { action: "TRANSACTION_CREATED", at: new Date().toISOString() } }, { status: 201 });
     }
 
     await updateStore((data) => {
