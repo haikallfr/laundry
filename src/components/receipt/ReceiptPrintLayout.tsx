@@ -73,19 +73,19 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
 
 export function ReceiptPreview({ transaction, settings, width = 58 }: { transaction: Transaction; settings: StoreSettings; width?: 58 | 80 }) {
   return (
-    <div className="receipt-paper mx-auto p-3 shadow-soft" data-width={width}>
+    <div className="receipt-paper mx-auto p-2 shadow-soft" data-width={width}>
       <div className="text-center">
-        <div className="text-sm font-bold">{settings.storeName}</div>
+        <div className="receipt-title">{settings.storeName}</div>
         <div>{settings.address}</div>
         <div>WA: {settings.whatsapp}</div>
       </div>
-      <div className="my-2 border-t border-dashed border-black" />
+      <div className="receipt-line my-2 border-t border-dashed" />
       <Row label="No" value={transaction.transactionNumber} />
       <Row label="Tanggal" value={formatDate(transaction.createdAt)} />
       <Row label="Kasir" value={transaction.cashier.name} />
       <Row label="Pelanggan" value={transaction.customer.name} />
       <Row label="HP" value={transaction.customer.phone} />
-      <div className="my-2 border-t border-dashed border-black" />
+      <div className="receipt-line my-2 border-t border-dashed" />
       {transaction.items.map((item) => (
         <div key={item.id} className="mb-1">
           <div className="font-bold">{item.serviceName}</div>
@@ -96,12 +96,12 @@ export function ReceiptPreview({ transaction, settings, width = 58 }: { transact
           {item.notes ? <div>Catatan: {item.notes}</div> : null}
         </div>
       ))}
-      <div className="my-2 border-t border-dashed border-black" />
+      <div className="receipt-line my-2 border-t border-dashed" />
       <Row label="Subtotal" value={formatRupiah(transaction.subtotal)} />
       {transaction.discount > 0 ? <Row label="Diskon" value={formatRupiah(transaction.discount)} /> : null}
       {transaction.additionalFee > 0 ? <Row label="Tambahan" value={formatRupiah(transaction.additionalFee)} /> : null}
       {transaction.tax > 0 ? <Row label="Pajak" value={formatRupiah(transaction.tax)} /> : null}
-      <div className="my-1 border-t border-black" />
+      <div className="receipt-line my-1 border-t" />
       <Row label="TOTAL" value={formatRupiah(transaction.grandTotal)} strong />
       <Row label="Dibayar" value={formatRupiah(transaction.paidAmount)} />
       <Row label="Kembali" value={formatRupiah(transaction.changeAmount)} />
@@ -109,7 +109,7 @@ export function ReceiptPreview({ transaction, settings, width = 58 }: { transact
       <Row label="Bayar" value={receiptPaymentStatus(transaction)} />
       <Row label="Estimasi" value={transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-"} />
       {transaction.notes ? <div className="mt-1">Catatan: {transaction.notes}</div> : null}
-      <div className="my-2 border-t border-dashed border-black" />
+      <div className="receipt-line my-2 border-t border-dashed" />
       <div className="text-center">Terima kasih sudah menggunakan layanan kami.</div>
     </div>
   );

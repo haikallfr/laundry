@@ -82,14 +82,28 @@ textarea {
   width: 58mm;
   color: #000;
   background: #fff;
-  font-family: "Courier New", monospace;
-  font-size: 10px;
-  line-height: 1.35;
+  font-family: Arial, "Courier New", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.28;
+  -webkit-font-smoothing: none;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+  text-rendering: geometricPrecision;
 }
 
 .receipt-paper[data-width="80"] {
   width: 80mm;
-  font-size: 11px;
+  font-size: 12px;
+}
+
+.receipt-paper .receipt-title {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.receipt-paper .receipt-line {
+  border-color: #000 !important;
 }
 
 @media print {
@@ -115,7 +129,10 @@ textarea {
     width: 58mm;
     max-width: 58mm;
     margin: 0;
+    padding: 1.5mm !important;
     box-shadow: none !important;
+    color: #000 !important;
+    font-weight: 800 !important;
   }
 
   .receipt-paper[data-width="80"] {
