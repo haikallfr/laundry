@@ -83,27 +83,44 @@ textarea {
   color: #000;
   background: #fff;
   font-family: Arial, "Courier New", monospace;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.28;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.24;
   -webkit-font-smoothing: none;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
   text-rendering: geometricPrecision;
+  overflow-wrap: anywhere;
 }
 
 .receipt-paper[data-width="80"] {
   width: 80mm;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .receipt-paper .receipt-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
 }
 
 .receipt-paper .receipt-line {
   border-color: #000 !important;
+}
+
+.receipt-paper .receipt-row,
+.receipt-paper .receipt-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18mm, auto);
+  gap: 1.5mm;
+  align-items: start;
+}
+
+.receipt-paper .receipt-row-value,
+.receipt-paper .receipt-item-value {
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media print {
@@ -119,17 +136,17 @@ textarea {
   }
 
   .print-shell {
-    width: 58mm !important;
-    min-width: 58mm !important;
+    width: 54mm !important;
+    min-width: 54mm !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
   .receipt-paper {
-    width: 58mm;
-    max-width: 58mm;
+    width: 54mm;
+    max-width: 54mm;
     margin: 0;
-    padding: 1.5mm !important;
+    padding: 1mm !important;
     box-shadow: none !important;
     color: #000 !important;
     font-weight: 800 !important;

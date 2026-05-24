@@ -89,9 +89,9 @@ export function ReceiptPreview({ transaction, settings, width = 58 }: { transact
       {transaction.items.map((item) => (
         <div key={item.id} className="mb-1">
           <div className="font-bold">{item.serviceName}</div>
-          <div className="flex justify-between">
+          <div className="receipt-item-row">
             <span>{item.quantity} {unitLabel[item.unit]} x {formatRupiah(item.price)}</span>
-            <span>{formatRupiah(item.subtotal)}</span>
+            <span className="receipt-item-value">{formatRupiah(item.subtotal)}</span>
           </div>
           {item.notes ? <div>Catatan: {item.notes}</div> : null}
         </div>
@@ -117,9 +117,9 @@ export function ReceiptPreview({ transaction, settings, width = 58 }: { transact
 
 function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className={`flex justify-between gap-3 ${strong ? "font-bold" : ""}`}>
+    <div className={`receipt-row ${strong ? "font-bold" : ""}`}>
       <span>{label}</span>
-      <span className="text-right">{value}</span>
+      <span className="receipt-row-value">{value}</span>
     </div>
   );
 }
