@@ -73,54 +73,9 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
 
 export function ReceiptPreview({ transaction, settings, width = 58 }: { transaction: Transaction; settings: StoreSettings; width?: 58 | 80 }) {
   return (
-    <div className="receipt-paper shadow-soft" data-width={width}>
-      <div className="text-center">
-        <div className="receipt-title">{settings.storeName}</div>
-        <div>{settings.address}</div>
-        <div>WA: {settings.whatsapp}</div>
-      </div>
-      <div className="receipt-line my-2 border-t border-dashed" />
-      <Row label="No" value={transaction.transactionNumber} />
-      <Row label="Tanggal" value={formatDate(transaction.createdAt)} />
-      <Row label="Kasir" value={transaction.cashier.name} />
-      <Row label="Pelanggan" value={transaction.customer.name} />
-      <Row label="HP" value={transaction.customer.phone} />
-      <div className="receipt-line my-2 border-t border-dashed" />
-      {transaction.items.map((item) => (
-        <div key={item.id} className="mb-1">
-          <div className="font-bold">{item.serviceName}</div>
-          <div className="receipt-item-row">
-            <span className="receipt-item-label">{item.quantity} {unitLabel[item.unit]} x {formatRupiah(item.price)}</span>
-            <span className="receipt-item-value">{formatRupiah(item.subtotal)}</span>
-          </div>
-          {item.notes ? <div>Catatan: {item.notes}</div> : null}
-        </div>
-      ))}
-      <div className="receipt-line my-2 border-t border-dashed" />
-      <Row label="Subtotal" value={formatRupiah(transaction.subtotal)} />
-      {transaction.discount > 0 ? <Row label="Diskon" value={formatRupiah(transaction.discount)} /> : null}
-      {transaction.additionalFee > 0 ? <Row label="Tambahan" value={formatRupiah(transaction.additionalFee)} /> : null}
-      {transaction.tax > 0 ? <Row label="Pajak" value={formatRupiah(transaction.tax)} /> : null}
-      <div className="receipt-line my-1 border-t" />
-      <Row label="TOTAL" value={formatRupiah(transaction.grandTotal)} strong />
-      <Row label="Dibayar" value={formatRupiah(transaction.paidAmount)} />
-      <Row label="Kembali" value={formatRupiah(transaction.changeAmount)} />
-      <Row label="Metode" value={transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-"} />
-      <Row label="Bayar" value={receiptPaymentStatus(transaction)} />
-      <Row label="Estimasi" value={transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-"} />
-      {transaction.notes ? <div className="mt-1">Catatan: {transaction.notes}</div> : null}
-      <div className="receipt-line my-2 border-t border-dashed" />
-      <div className="text-center">Terima kasih sudah menggunakan layanan kami.</div>
-    </div>
-  );
-}
-
-function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
-  return (
-    <div className={`receipt-row ${strong ? "font-bold" : ""}`}>
-      <span className="receipt-row-label">{label}</span>
-      <span className="receipt-row-value">{value}</span>
-    </div>
+    <pre className="receipt-paper shadow-soft" data-width={width}>
+      {buildReceiptText(transaction, settings, width)}
+    </pre>
   );
 }
 
@@ -216,56 +171,108 @@ async function findWritableCharacteristic(server: BluetoothServerLike) {
 }
 
 function buildEscposReceipt(transaction: Transaction, settings: StoreSettings) {
-  const width = settings.receiptWidth === 80 ? 42 : 32;
-  const lines = [
-    center(settings.storeName, width),
-    center(settings.address, width),
-    center(`WA: ${settings.whatsapp}`, width),
-    divider(width),
-    pair("No", transaction.transactionNumber, width),
-    pair("Tanggal", formatDate(transaction.createdAt), width),
-    pair("Kasir", transaction.cashier.name, width),
-    pair("Pelanggan", transaction.customer.name, width),
-    pair("HP", transaction.customer.phone, width),
-    divider(width),
-    ...transaction.items.flatMap((item) => [
-      item.serviceName,
-      pair(`${item.quantity} ${unitLabel[item.unit]} x ${formatRupiah(item.price)}`, formatRupiah(item.subtotal), width),
-      ...(item.notes ? [`Catatan: ${item.notes}`] : []),
-    ]),
-    divider(width),
-    pair("Subtotal", formatRupiah(transaction.subtotal), width),
-    ...(transaction.discount > 0 ? [pair("Diskon", formatRupiah(transaction.discount), width)] : []),
-    ...(transaction.additionalFee > 0 ? [pair("Tambahan", formatRupiah(transaction.additionalFee), width)] : []),
-    ...(transaction.tax > 0 ? [pair("Pajak", formatRupiah(transaction.tax), width)] : []),
-    divider(width),
-    pair("TOTAL", formatRupiah(transaction.grandTotal), width),
-    pair("Dibayar", formatRupiah(transaction.paidAmount), width),
-    pair("Kembali", formatRupiah(transaction.changeAmount), width),
-    pair("Metode", transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-", width),
-    pair("Bayar", receiptPaymentStatus(transaction), width),
-    pair("Estimasi", transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-", width),
-    ...(transaction.notes ? [`Catatan: ${transaction.notes}`] : []),
-    divider(width),
-    center("Terima kasih", width),
-  ];
-
-  return lines.map((line) => line.slice(0, width)).join("\n");
+  return buildReceiptText(transaction, settings, settings.receiptWidth);
 }
 
-function center(value: string, width: number) {
-  const text = value.trim();
+function buildReceiptText(transaction: Transaction, settings: StoreSettings, paperWidth: 58 | 80) {
+  const width = paperWidth === 80 ? 42 : 30;
+  const lines = [
+    ...centerLines(settings.storeName, width),
+    ...centerLines(settings.address, width),
+    ...centerLines(`WA: ${settings.whatsapp}`, width),
+    divider(width),
+    ...pairLines("No", transaction.transactionNumber, width),
+    ...pairLines("Tanggal", formatDate(transaction.createdAt), width),
+    ...pairLines("Kasir", transaction.cashier.name, width),
+    ...pairLines("Pelanggan", transaction.customer.name, width),
+    ...pairLines("HP", transaction.customer.phone || "-", width),
+    divider(width),
+    ...transaction.items.flatMap((item) => [
+      ...wrapText(item.serviceName, width),
+      ...pairLines(`${item.quantity} ${unitLabel[item.unit]} x ${formatRupiah(item.price)}`, formatRupiah(item.subtotal), width),
+      ...(item.notes ? wrapText(`Catatan: ${item.notes}`, width) : []),
+    ]),
+    divider(width),
+    ...pairLines("Subtotal", formatRupiah(transaction.subtotal), width),
+    ...(transaction.discount > 0 ? pairLines("Diskon", formatRupiah(transaction.discount), width) : []),
+    ...(transaction.additionalFee > 0 ? pairLines("Tambahan", formatRupiah(transaction.additionalFee), width) : []),
+    ...(transaction.tax > 0 ? pairLines("Pajak", formatRupiah(transaction.tax), width) : []),
+    divider(width),
+    ...pairLines("TOTAL", formatRupiah(transaction.grandTotal), width),
+    ...pairLines("Dibayar", formatRupiah(transaction.paidAmount), width),
+    ...pairLines("Kembali", formatRupiah(transaction.changeAmount), width),
+    ...pairLines("Metode", transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-", width),
+    ...pairLines("Bayar", receiptPaymentStatus(transaction), width),
+    ...pairLines("Estimasi", transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-", width),
+    ...(transaction.notes ? wrapText(`Catatan: ${transaction.notes}`, width) : []),
+    divider(width),
+    ...centerLines("Terima kasih sudah menggunakan", width),
+    ...centerLines("layanan kami.", width),
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function centerLines(value: string, width: number) {
+  return wrapText(value, width).map((text) => {
+    const padding = Math.max(0, Math.floor((width - text.length) / 2));
+    return `${" ".repeat(padding)}${text}`;
+  });
+}
+
+function wrapText(value: string, width: number) {
+  const words = value.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [""];
+  const lines: string[] = [];
+  let current = "";
+
+  for (const word of words) {
+    if (word.length > width) {
+      if (current) lines.push(current);
+      for (let index = 0; index < word.length; index += width) {
+        lines.push(word.slice(index, index + width));
+      }
+      current = "";
+      continue;
+    }
+
+    const next = current ? `${current} ${word}` : word;
+    if (next.length <= width) current = next;
+    else {
+      lines.push(current);
+      current = word;
+    }
+  }
+
+  if (current) lines.push(current);
+  return lines;
+}
+
+function right(value: string, width: number) {
+  const text = value.trim().slice(0, width);
   const padding = Math.max(0, Math.floor((width - text.length) / 2));
-  return `${" ".repeat(padding)}${text}`;
+  return `${" ".repeat(width - text.length)}${text}`;
 }
 
 function divider(width: number) {
   return "-".repeat(width);
 }
 
-function pair(label: string, value: string, width: number) {
+function pairLines(label: string, value: string, width: number) {
   const left = label.trim();
   const right = value.trim();
-  const space = Math.max(1, width - left.length - right.length);
-  return `${left}${" ".repeat(space)}${right}`;
+  if (!right) return wrapText(left, width);
+
+  if (left.length + right.length + 1 <= width) {
+    return [`${left}${" ".repeat(width - left.length - right.length)}${right}`];
+  }
+
+  return [
+    ...wrapText(left, width),
+    ...wrapText(right, width).map((line) => rightPadLine(line, width))
+  ];
+}
+
+function rightPadLine(value: string, width: number) {
+  return right(value, width);
 }
