@@ -79,16 +79,16 @@ textarea {
 }
 
 .receipt-paper {
-  width: 210px;
-  max-width: 55mm;
+  width: 230px;
+  max-width: 58mm;
   margin-left: 0;
   padding-left: 0;
   color: #000000;
   background: #ffffff;
   font-family: "Courier New", monospace, sans-serif;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.18;
   letter-spacing: 0;
   white-space: pre;
   -webkit-font-smoothing: none;
@@ -101,7 +101,7 @@ textarea {
 .receipt-paper[data-width="80"] {
   width: 264px;
   max-width: 72mm;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .receipt-paper .receipt-title {
@@ -158,15 +158,15 @@ textarea {
   }
 
   .print-shell {
-    width: 210px !important;
+    width: 230px !important;
     min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
   .receipt-paper {
-    width: 210px !important;
-    max-width: 55mm !important;
+    width: 230px !important;
+    max-width: 58mm !important;
     margin: 0 !important;
     margin-left: 0 !important;
     padding: 0 !important;
