@@ -79,8 +79,8 @@ textarea {
 }
 
 .receipt-paper {
-  width: 192px;
-  max-width: 51mm;
+  width: 210px;
+  max-width: 55mm;
   margin-left: 0;
   padding-left: 0;
   color: #000000;
@@ -158,15 +158,15 @@ textarea {
   }
 
   .print-shell {
-    width: 192px !important;
+    width: 210px !important;
     min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
   .receipt-paper {
-    width: 192px !important;
-    max-width: 51mm !important;
+    width: 210px !important;
+    max-width: 55mm !important;
     margin: 0 !important;
     margin-left: 0 !important;
     padding: 0 !important;

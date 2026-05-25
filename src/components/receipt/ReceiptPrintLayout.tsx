@@ -175,7 +175,7 @@ function buildEscposReceipt(transaction: Transaction, settings: StoreSettings) {
 }
 
 function buildReceiptText(transaction: Transaction, settings: StoreSettings, paperWidth: 58 | 80) {
-  const width = paperWidth === 80 ? 42 : 32;
+  const width = paperWidth === 80 ? 42 : 35;
   const lines = [
     ...centerLines(settings.storeName, width),
     ...centerLines(settings.address, width),
