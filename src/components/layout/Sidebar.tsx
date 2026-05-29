@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart3, Calculator, ClipboardList, CreditCard, FileText, Home, ReceiptText, Settings, Shirt, UserCog, Users, WalletCards } from "lucide-react";
+import logo from "@/image/logo.png";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/types";
 
@@ -24,7 +25,6 @@ const nav = [
 export function Sidebar({ role = "OWNER", storeName = "LaundryPro", mobileOpen = false, onClose }: { role?: Role; storeName?: string; mobileOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   const items = nav.filter((item) => role === "OWNER" || !item.ownerOnly);
-  const initials = storeName.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase() || "LP";
   return (
     <>
     {mobileOpen ? <button aria-label="Tutup menu" className="fixed inset-0 z-40 bg-slate-900/35 lg:hidden" onClick={onClose} /> : null}
@@ -33,7 +33,7 @@ export function Sidebar({ role = "OWNER", storeName = "LaundryPro", mobileOpen =
       mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
     )}>
       <Link href={role === "OWNER" ? "/dashboard-owner" : "/cashier"} className="flex items-center gap-3 px-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600 text-sm font-black text-white">{initials}</div>
+        <img src={logo.src} alt="Logo" className="h-10 w-10 shrink-0 rounded-lg object-contain" />
         <div>
           <p className="max-w-40 truncate text-base font-bold text-ink">{storeName}</p>
           <p className="text-xs text-muted">POS Profesional</p>

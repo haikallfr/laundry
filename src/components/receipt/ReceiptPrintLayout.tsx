@@ -1,26 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { formatDate, formatRupiah, laundryStatusLabel, paymentMethodLabel, paymentStatusLabel, unitLabel } from "@/lib/utils";
+import strukLogo from "@/image/struk.png";
+import { formatDate, formatRupiah, paymentMethodLabel, paymentStatusLabel, unitLabel } from "@/lib/utils";
 import type { StoreSettings, Transaction } from "@/types";
 
 export function ReceiptPrintLayout({ transaction, settings }: { transaction: Transaction; settings: StoreSettings }) {
   const [width, setWidth] = useState<58 | 80>(settings.receiptWidth);
   const [bluetoothStatus, setBluetoothStatus] = useState("");
   const [isBluetoothPrinting, setIsBluetoothPrinting] = useState(false);
-  const [canUseBluetooth, setCanUseBluetooth] = useState(false);
-
-  useEffect(() => {
-    setCanUseBluetooth(Boolean((navigator as BluetoothNavigator).bluetooth));
-    const search = new URLSearchParams(window.location.search);
-    if (search.get("autoprint") === "1") setTimeout(openPrintDialog, 500);
-  }, []);
-
-  function openPrintDialog() {
-    window.focus();
-    setTimeout(() => window.print(), 50);
-  }
 
   async function printViaBluetooth() {
     setBluetoothStatus("");
@@ -30,7 +19,7 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
     if (!bluetooth) {
       setBluetoothStatus(
         isIos
-          ? "Bluetooth langsung tidak tersedia di browser iPhone. Gunakan tombol Print Nota/AirPrint, atau pakai Android/Windows untuk Bluetooth langsung."
+          ? "Bluetooth langsung tidak tersedia di browser iPhone. Pakai Android/Windows untuk Bluetooth langsung."
           : "Browser ini belum mendukung Web Bluetooth. Coba Chrome/Edge di Android atau desktop."
       );
       return;
@@ -52,12 +41,9 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
   return (
     <div className="print-shell min-h-screen bg-slate-100 p-6">
       <div className="no-print mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={openPrintDialog}>Print Nota</Button>
-        {canUseBluetooth ? (
-          <Button variant="secondary" onClick={printViaBluetooth} disabled={isBluetoothPrinting}>
-            {isBluetoothPrinting ? "Mengirim..." : "Bluetooth Langsung"}
-          </Button>
-        ) : null}
+        <Button onClick={printViaBluetooth} disabled={isBluetoothPrinting}>
+          {isBluetoothPrinting ? "Mengirim..." : "Print Nota"}
+        </Button>
         <Button variant="secondary" onClick={() => setWidth(58)}>58mm</Button>
         <Button variant="secondary" onClick={() => setWidth(80)}>80mm</Button>
       </div>
@@ -73,9 +59,73 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
 
 export function ReceiptPreview({ transaction, settings, width = 58 }: { transaction: Transaction; settings: StoreSettings; width?: 58 | 80 }) {
   return (
-    <pre className="receipt-paper shadow-soft" data-width={width}>
-      {buildReceiptText(transaction, settings, width)}
-    </pre>
+    <div className="receipt-paper shadow-soft" data-width={width}>
+      <div className="receipt-print-header">
+        <div className="receipt-print-header-text">
+          <div className="receipt-store-name">{settings.storeName}</div>
+          <div>{settings.address}</div>
+          <div>WA: {settings.whatsapp}</div>
+        </div>
+        <img className="receipt-print-logo" src={strukLogo.src} alt="" aria-hidden="true" />
+      </div>
+      <ReceiptHtmlBody transaction={transaction} />
+    </div>
+  );
+}
+
+function ReceiptHtmlBody({ transaction }: { transaction: Transaction }) {
+  return (
+    <div className="receipt-html-body">
+      <ReceiptDivider />
+      <ReceiptRow label="No" value={transaction.transactionNumber} />
+      <ReceiptRow label="Tanggal" value={formatDate(transaction.createdAt)} />
+      <ReceiptRow label="Kasir" value={transaction.cashier.name} />
+      <ReceiptRow label="Pelanggan" value={transaction.customer.name} />
+      <ReceiptRow label="HP" value={transaction.customer.phone || "-"} />
+
+      <ReceiptDivider />
+      {transaction.items.map((item, index) => (
+        <div key={`${item.serviceId}-${index}`} className="receipt-item">
+          <div className="receipt-item-name">{item.serviceName}</div>
+          <ReceiptRow label={`${item.quantity} ${unitLabel[item.unit]} x ${formatRupiah(item.price)}`} value={formatRupiah(item.subtotal)} />
+          {item.notes ? <div className="receipt-note">Catatan: {item.notes}</div> : null}
+        </div>
+      ))}
+
+      <ReceiptDivider />
+      <ReceiptRow label="Subtotal" value={formatRupiah(transaction.subtotal)} />
+      {transaction.discount > 0 ? <ReceiptRow label="Diskon" value={formatRupiah(transaction.discount)} /> : null}
+      {transaction.additionalFee > 0 ? <ReceiptRow label="Tambahan" value={formatRupiah(transaction.additionalFee)} /> : null}
+      {transaction.tax > 0 ? <ReceiptRow label="Pajak" value={formatRupiah(transaction.tax)} /> : null}
+
+      <ReceiptDivider />
+      <ReceiptRow label="TOTAL" value={formatRupiah(transaction.grandTotal)} strong />
+      <ReceiptRow label="Dibayar" value={formatRupiah(transaction.paidAmount)} />
+      <ReceiptRow label="Kembali" value={formatRupiah(transaction.changeAmount)} />
+      <ReceiptRow label="Metode" value={transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-"} />
+      <ReceiptRow label="Bayar" value={receiptPaymentStatus(transaction)} />
+      <ReceiptRow label="Estimasi" value={transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-"} />
+      {transaction.notes ? <div className="receipt-note">Catatan: {transaction.notes}</div> : null}
+
+      <ReceiptDivider />
+      <div className="receipt-footer">
+        <div>Terima kasih sudah menggunakan</div>
+        <div>layanan kami.</div>
+      </div>
+    </div>
+  );
+}
+
+function ReceiptDivider() {
+  return <div className="receipt-divider" />;
+}
+
+function ReceiptRow({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <div className={strong ? "receipt-html-row receipt-html-row-strong" : "receipt-html-row"}>
+      <span className="receipt-html-label">{label}</span>
+      <span className="receipt-html-value">{value}</span>
+    </div>
   );
 }
 
@@ -126,6 +176,11 @@ const thermalPrinterServices: BluetoothServiceUUID[] = [
   "e7810a71-73ae-499d-8c15-faa9aef0c3f2",
 ];
 
+const receiptLineWidth: Record<58 | 80, number> = {
+  58: 35,
+  80: 42,
+};
+
 async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigator["bluetooth"]>, text: string) {
   const device = await bluetooth.requestDevice({
     acceptAllDevices: true,
@@ -174,13 +229,15 @@ function buildEscposReceipt(transaction: Transaction, settings: StoreSettings) {
   return buildReceiptText(transaction, settings, settings.receiptWidth);
 }
 
-function buildReceiptText(transaction: Transaction, settings: StoreSettings, paperWidth: 58 | 80) {
-  const width = paperWidth === 80 ? 42 : 35;
+function buildReceiptText(transaction: Transaction, settings: StoreSettings, paperWidth: 58 | 80, includeHeader = true) {
+  const width = receiptLineWidth[paperWidth];
   const lines = [
-    ...centerLines(settings.storeName, width),
-    ...centerLines(settings.address, width),
-    ...centerLines(`WA: ${settings.whatsapp}`, width),
-    "",
+    ...(includeHeader ? [
+      ...centerLines(settings.storeName, width),
+      ...centerLines(settings.address, width),
+      ...centerLines(`WA: ${settings.whatsapp}`, width),
+      ""
+    ] : []),
     divider(width),
     ...pairLines("No", transaction.transactionNumber, width),
     ...pairLines("Tanggal", formatDate(transaction.createdAt), width),

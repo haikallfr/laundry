@@ -85,17 +85,108 @@ textarea {
   padding-left: 0;
   color: #000000;
   background: #ffffff;
-  font-family: "Courier New", monospace, sans-serif;
-  font-size: 10px;
+  font-family: Calibri, "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 1.45;
+  line-height: 1.22;
   letter-spacing: 0;
-  white-space: pre;
   -webkit-font-smoothing: none;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
   text-rendering: geometricPrecision;
   overflow: visible;
+}
+
+.receipt-print-header {
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px;
+  column-gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.24;
+}
+
+.receipt-print-header-text {
+  min-width: 0;
+  text-align: center;
+}
+
+.receipt-store-name {
+  font-size: 13.6px;
+  font-weight: 700;
+}
+
+.receipt-print-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.receipt-body {
+  margin: 0;
+  color: #000000;
+  font: inherit;
+  line-height: inherit;
+  white-space: pre;
+}
+
+.receipt-html-body {
+  color: #000000;
+  font: inherit;
+  line-height: 1.14;
+}
+
+.receipt-divider {
+  margin: 7px 0;
+  margin-right: 15px;
+  border-top: 1.5px dashed #000000;
+}
+
+.receipt-html-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3px;
+  min-height: 16px;
+  padding-right: 15px;
+}
+
+.receipt-html-row-strong {
+  font-weight: 800;
+}
+
+.receipt-html-label {
+  min-width: 0;
+  flex: 1 1 42%;
+  overflow-wrap: break-word;
+}
+
+.receipt-html-value {
+  min-width: 0;
+  max-width: 58%;
+  flex: 0 1 58%;
+  text-align: right;
+  overflow-wrap: break-word;
+}
+
+.receipt-item {
+  margin: 4px 0;
+}
+
+.receipt-item-name {
+  font-weight: 700;
+}
+
+.receipt-note {
+  margin-top: 2px;
+  overflow-wrap: break-word;
+}
+
+.receipt-footer {
+  padding-top: 4px;
+  text-align: center;
 }
 
 .receipt-paper[data-width="80"] {
@@ -172,8 +263,11 @@ textarea {
     padding: 0 !important;
     padding-left: 0 !important;
     box-shadow: none !important;
+    font-family: Calibri, "Segoe UI", Arial, sans-serif !important;
     color: #000000 !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
+    text-rendering: crispEdges !important;
+    -webkit-font-smoothing: none !important;
   }
 
   .receipt-paper[data-width="80"] {

@@ -4,7 +4,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "LaundryPro POS",
-  description: "Aplikasi kasir laundry profesional"
+  description: "Aplikasi kasir laundry profesional",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png"
+  }
 };
 
 export const preferredRegion = "bom1";

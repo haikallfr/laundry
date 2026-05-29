@@ -5,6 +5,7 @@ import { AlertTriangle, Bell, CheckCircle2, Clock3, CreditCard, LogOut, Menu, Se
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import logo from "@/image/logo.png";
 import type { AppNotification, NotificationTone } from "@/lib/notifications";
 import { cn } from "@/lib/utils";
 import type { User } from "@/types";
@@ -38,9 +39,7 @@ export function Topbar({ user, storeName = "LaundryPro", notifications = [], onM
       <div className="flex items-center justify-between gap-4">
         <Button variant="secondary" size="sm" className="shrink-0 lg:hidden" aria-label="Buka menu" onClick={onMenu}><Menu className="h-4 w-4" /></Button>
         <div className="flex min-w-0 items-center gap-2 lg:hidden">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-xs font-black text-white">
-            {storeName.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase() || "LP"}
-          </div>
+          <img src={logo.src} alt="Logo" className="h-9 w-9 shrink-0 rounded-lg object-contain" />
           <div className="min-w-0">
             <p className="truncate text-sm font-black text-ink">{storeName}</p>
             <p className="text-xs text-muted">POS</p>

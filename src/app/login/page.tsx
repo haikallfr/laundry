@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, Mail, Shirt } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/Button";
+import logo from "@/image/logo.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("owner@laundrypro.test");
@@ -30,9 +31,7 @@ export default function LoginPage() {
       <section className="flex min-h-screen items-center justify-center p-6">
         <form onSubmit={submit} className="w-full max-w-md rounded-lg border border-line bg-white p-6 shadow-soft">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-white">
-              <Shirt className="h-6 w-6" />
-            </div>
+            <img src={logo.src} alt="Logo" className="h-11 w-11 shrink-0 rounded-lg object-contain" />
             <div>
               <p className="text-sm font-bold text-brand-700">LaundryPro POS</p>
               <h2 className="text-2xl font-black text-ink">Masuk</h2>
