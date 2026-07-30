@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, MessageCircle, Plus, Printer, QrCode, Search, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, MessageCircle, Plus, QrCode, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { PrintReceiptButton } from "@/components/receipt/PrintReceiptButton";
 import { formatDate, formatRupiah, generateTransactionNumber, laundryStatusLabel, paymentMethodLabel, paymentStatusFromPaid, paymentStatusLabel, unitLabel } from "@/lib/utils";
 import type { Customer, LaundryService, PaymentMethod, StoreSettings, Transaction, TransactionItem, User } from "@/types";
 
@@ -268,10 +269,6 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
     window.location.href = url;
   }
 
-  function openReceipt(transactionId: string) {
-    window.open(`/print/receipt/${transactionId}`, "_blank");
-  }
-
   function getWhatsAppUrl(transactionData: Transaction) {
     const targetPhone = transactionData.customer.phone || customer.phone;
     if (!targetPhone.trim()) return "";
@@ -346,7 +343,7 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
             <div>
               <h1 className="text-xl font-black text-ink">Kasir Laundry</h1>
             </div>
-            {savedTransaction ? <div className="flex flex-wrap gap-2"><Button type="button" variant="secondary" onClick={() => openReceipt(savedTransaction.id)}><Printer className="h-4 w-4" />Print</Button>{savedWhatsAppUrl ? <a href={savedWhatsAppUrl} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-line bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"><MessageCircle className="h-4 w-4" />Kirim WA</a> : <Button variant="secondary" onClick={sendWhatsApp}><MessageCircle className="h-4 w-4" />Kirim WA</Button>}</div> : null}
+            {savedTransaction ? <div className="flex flex-wrap gap-2"><PrintReceiptButton transaction={savedTransaction} settings={settings} label="Print" variant="secondary" />{savedWhatsAppUrl ? <a href={savedWhatsAppUrl} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-line bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"><MessageCircle className="h-4 w-4" />Kirim WA</a> : <Button variant="secondary" onClick={sendWhatsApp}><MessageCircle className="h-4 w-4" />Kirim WA</Button>}</div> : null}
           </div>
       </section>
 
@@ -518,7 +515,7 @@ export function TransactionForm({ customers, services, settings, cashier }: { cu
           <h2 className="mt-3 text-xl font-black text-ink">Transaksi tersimpan</h2>
           <p className="mt-1 text-sm text-muted">Transaksi {savedTransaction.transactionNumber} berhasil disimpan.</p>
           <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-            <Button type="button" onClick={() => openReceipt(savedTransaction.id)}><Printer className="h-4 w-4" />Print nota</Button>
+            <PrintReceiptButton transaction={savedTransaction} settings={settings} label="Print nota" />
             {savedWhatsAppUrl ? <a href={savedWhatsAppUrl} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-line bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"><MessageCircle className="h-4 w-4" />Kirim by WA</a> : <Button variant="secondary" onClick={sendWhatsApp}><MessageCircle className="h-4 w-4" />Kirim by WA</Button>}
             <Button variant="secondary" onClick={() => { setCustomer(emptyCustomer()); setItems([]); setDiscount(""); setAdditionalFee(""); setTax(""); setPaidAmount(""); setMethod(""); setSavedTransaction(null); setStep("customer"); }}><Plus className="h-4 w-4" />Transaksi baru</Button>
           </div>

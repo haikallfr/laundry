@@ -28,11 +28,17 @@ const supabaseTable = process.env.SUPABASE_STORE_TABLE || "app_store";
 const storeKey = process.env.APP_STORE_KEY || "default";
 const relationalStoreEnabled = Boolean(process.env.DATABASE_URL);
 
+function isVercelDemoMode() {
+  return false;
+}
+
 export function hasSupabaseStore() {
+  if (isVercelDemoMode()) return false;
   return Boolean(supabaseUrl && supabaseKey);
 }
 
 export function hasRelationalStore() {
+  if (isVercelDemoMode()) return false;
   return relationalStoreEnabled;
 }
 
@@ -67,6 +73,8 @@ function isNextJsBuild() {
 }
 
 export const readStore = cache(async function readStore(): Promise<AppData> {
+  if (isVercelDemoMode()) return seedData();
+
   if (hasRelationalStore()) {
     if (isNextJsBuild()) {
       return seedData();
@@ -86,6 +94,8 @@ export const readStore = cache(async function readStore(): Promise<AppData> {
 });
 
 export async function writeStore(data: AppData) {
+  if (isVercelDemoMode()) return;
+
   if (hasRelationalStore()) {
     await writePrismaStore(data);
     return;
@@ -755,71 +765,75 @@ async function writePrismaStore(data: AppData) {
       }
     });
 
-    for (const expense of data.expenses) {
-      await tx.expense.create({
-        data: {
-          id: expense.id,
-          date: asDate(expense.date) ?? new Date(),
-          category: expense.category,
-          description: encodeExpenseDescription(expense.description, expense.materialCoverageKg),
-          amount: expense.amount,
-          paymentMethod: expense.paymentMethod,
-          proofImage: expense.proofImage ?? null,
-          createdBy: expense.createdBy
-        }
-      });
-    }
-
-    for (const transaction of data.transactions) {
-      await tx.transaction.create({
-        data: {
-          id: transaction.id,
-          transactionNumber: transaction.transactionNumber,
-          customerId: transaction.customerId,
-          cashierId: transaction.cashierId,
-          subtotal: transaction.subtotal,
-          discount: transaction.discount,
-          additionalFee: transaction.additionalFee,
-          tax: transaction.tax,
-          grandTotal: transaction.grandTotal,
-          paidAmount: transaction.paidAmount,
-          changeAmount: transaction.changeAmount,
-          paymentStatus: transaction.paymentStatus,
-          laundryStatus: transaction.laundryStatus,
-          estimatedDoneAt: asDate(transaction.estimatedDoneAt),
-          completedAt: asDate(transaction.completedAt),
-          pickedUpAt: asDate(transaction.pickedUpAt),
-          notes: transaction.notes ?? null,
-          createdAt: asDate(transaction.createdAt) ?? new Date(),
-          updatedAt: asDate(transaction.updatedAt) ?? new Date(),
-          cancelledAt: asDate(transaction.cancelledAt),
-          cancelReason: transaction.cancelReason ?? null,
-          items: {
-            create: transaction.items.map((item) => ({
-              id: item.id,
-              serviceId: item.serviceId || null,
-              serviceName: item.serviceName,
-              unit: item.unit,
-              quantity: item.quantity,
-              price: item.price,
-              cost: item.cost ?? 0,
-              subtotal: item.subtotal,
-              notes: item.notes ?? null
-            }))
-          },
-          payments: {
-            create: transaction.payments.map((payment) => ({
-              id: payment.id,
-              paymentMethod: payment.paymentMethod,
-              amount: payment.amount,
-              paidAt: asDate(payment.paidAt) ?? new Date(),
-              referenceNumber: payment.referenceNumber ?? null,
-              notes: payment.notes ?? null,
-              createdBy: payment.createdBy
-            }))
+    await Promise.all(
+      data.expenses.map((expense) =>
+        tx.expense.create({
+          data: {
+            id: expense.id,
+            date: asDate(expense.date) ?? new Date(),
+            category: expense.category,
+            description: encodeExpenseDescription(expense.description, expense.materialCoverageKg),
+            amount: expense.amount,
+            paymentMethod: expense.paymentMethod,
+            proofImage: expense.proofImage ?? null,
+            createdBy: expense.createdBy
           }
-        }
-      });
-    }
-  });
+        })
+      )
+    );
+
+    await Promise.all(
+      data.transactions.map((transaction) =>
+        tx.transaction.create({
+          data: {
+            id: transaction.id,
+            transactionNumber: transaction.transactionNumber,
+            customerId: transaction.customerId,
+            cashierId: transaction.cashierId,
+            subtotal: transaction.subtotal,
+            discount: transaction.discount,
+            additionalFee: transaction.additionalFee,
+            tax: transaction.tax,
+            grandTotal: transaction.grandTotal,
+            paidAmount: transaction.paidAmount,
+            changeAmount: transaction.changeAmount,
+            paymentStatus: transaction.paymentStatus,
+            laundryStatus: transaction.laundryStatus,
+            estimatedDoneAt: asDate(transaction.estimatedDoneAt),
+            completedAt: asDate(transaction.completedAt),
+            pickedUpAt: asDate(transaction.pickedUpAt),
+            notes: transaction.notes ?? null,
+            createdAt: asDate(transaction.createdAt) ?? new Date(),
+            updatedAt: asDate(transaction.updatedAt) ?? new Date(),
+            cancelledAt: asDate(transaction.cancelledAt),
+            cancelReason: transaction.cancelReason ?? null,
+            items: {
+              create: transaction.items.map((item) => ({
+                id: item.id,
+                serviceId: item.serviceId || null,
+                serviceName: item.serviceName,
+                unit: item.unit,
+                quantity: item.quantity,
+                price: item.price,
+                cost: item.cost ?? 0,
+                subtotal: item.subtotal,
+                notes: item.notes ?? null
+              }))
+            },
+            payments: {
+              create: transaction.payments.map((payment) => ({
+                id: payment.id,
+                paymentMethod: payment.paymentMethod,
+                amount: payment.amount,
+                paidAt: asDate(payment.paidAt) ?? new Date(),
+                referenceNumber: payment.referenceNumber ?? null,
+                notes: payment.notes ?? null,
+                createdBy: payment.createdBy
+              }))
+            }
+          }
+        })
+      )
+    );
+  }, { timeout: 30000, maxWait: 30000 });
 }

@@ -26,13 +26,14 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
     }
 
     setIsBluetoothPrinting(true);
-    setBluetoothStatus("Mencari printer Bluetooth...");
+    setBluetoothStatus("Menghubungkan printer Bluetooth...");
 
     try {
       await writeEscposReceipt(bluetooth, buildEscposReceipt(transaction, settings));
       setBluetoothStatus("Perintah cetak Bluetooth sudah dikirim ke printer.");
     } catch (error) {
-      setBluetoothStatus(error instanceof Error ? error.message : "Gagal mengirim struk ke printer Bluetooth.");
+      const msg = error instanceof Error ? error.message : (error as any)?.message || String(error);
+      setBluetoothStatus(`Gagal: ${msg}`);
     } finally {
       setIsBluetoothPrinting(false);
     }
@@ -134,12 +135,13 @@ function receiptPaymentStatus(transaction: Transaction) {
   return paymentStatusLabel[transaction.paymentStatus];
 }
 
-type BluetoothNavigator = Navigator & {
+export type BluetoothNavigator = Navigator & {
   bluetooth?: {
     requestDevice(options: {
       acceptAllDevices: boolean;
       optionalServices: BluetoothServiceUUID[];
     }): Promise<BluetoothDeviceLike>;
+    getDevices?(): Promise<BluetoothDeviceLike[]>;
   };
 };
 
@@ -176,16 +178,10 @@ const thermalPrinterServices: BluetoothServiceUUID[] = [
   "e7810a71-73ae-499d-8c15-faa9aef0c3f2",
 ];
 
-const receiptLineWidth: Record<58 | 80, number> = {
-  58: 35,
-  80: 42,
-};
 
-async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigator["bluetooth"]>, text: string) {
-  const device = await bluetooth.requestDevice({
-    acceptAllDevices: true,
-    optionalServices: thermalPrinterServices,
-  });
+
+export async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigator["bluetooth"]>, text: string) {
+  const device = await getBluetoothDevice(bluetooth);
   const server = await device.gatt?.connect();
   if (!server) throw new Error("Printer Bluetooth tidak bisa dihubungkan.");
 
@@ -210,6 +206,18 @@ async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigator["blu
   }
 }
 
+async function getBluetoothDevice(bluetooth: NonNullable<BluetoothNavigator["bluetooth"]>) {
+  const permittedDevices = await bluetooth.getDevices?.();
+  const permittedDevice = permittedDevices?.find((device) => device.gatt);
+
+  if (permittedDevice) return permittedDevice;
+
+  return bluetooth.requestDevice({
+    acceptAllDevices: true,
+    optionalServices: thermalPrinterServices,
+  });
+}
+
 async function findWritableCharacteristic(server: BluetoothServerLike) {
   for (const serviceId of thermalPrinterServices) {
     try {
@@ -225,117 +233,120 @@ async function findWritableCharacteristic(server: BluetoothServerLike) {
   throw new Error("Printer terhubung, tapi channel cetaknya tidak ditemukan. Printer ini kemungkinan Bluetooth Classic atau butuh protokol aplikasi vendor.");
 }
 
-function buildEscposReceipt(transaction: Transaction, settings: StoreSettings) {
-  return buildReceiptText(transaction, settings, settings.receiptWidth);
+export function buildEscposReceipt(transaction: Transaction, settings: StoreSettings) {
+  return buildReceiptText(transaction, settings);
 }
 
-function buildReceiptText(transaction: Transaction, settings: StoreSettings, paperWidth: 58 | 80, includeHeader = true) {
-  const width = receiptLineWidth[paperWidth];
-  const lines = [
-    ...(includeHeader ? [
-      ...centerLines(settings.storeName, width),
-      ...centerLines(settings.address, width),
-      ...centerLines(`WA: ${settings.whatsapp}`, width),
-      ""
-    ] : []),
-    divider(width),
-    ...pairLines("No", transaction.transactionNumber, width),
-    ...pairLines("Tanggal", formatDate(transaction.createdAt), width),
-    ...pairLines("Kasir", transaction.cashier.name, width),
-    ...pairLines("Pelanggan", transaction.customer.name, width),
-    ...pairLines("HP", transaction.customer.phone || "-", width),
-    "",
-    divider(width),
-    ...transaction.items.flatMap((item) => [
-      ...wrapText(item.serviceName, width),
-      ...pairLines(`${item.quantity} ${unitLabel[item.unit]} x ${formatRupiah(item.price)}`, formatRupiah(item.subtotal), width),
-      ...(item.notes ? wrapText(`Catatan: ${item.notes}`, width) : []),
-    ]),
-    "",
-    divider(width),
-    ...pairLines("Subtotal", formatRupiah(transaction.subtotal), width),
-    ...(transaction.discount > 0 ? pairLines("Diskon", formatRupiah(transaction.discount), width) : []),
-    ...(transaction.additionalFee > 0 ? pairLines("Tambahan", formatRupiah(transaction.additionalFee), width) : []),
-    ...(transaction.tax > 0 ? pairLines("Pajak", formatRupiah(transaction.tax), width) : []),
-    "",
-    divider(width),
-    ...pairLines("TOTAL", formatRupiah(transaction.grandTotal), width),
-    ...pairLines("Dibayar", formatRupiah(transaction.paidAmount), width),
-    ...pairLines("Kembali", formatRupiah(transaction.changeAmount), width),
-    ...pairLines("Metode", transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-", width),
-    ...pairLines("Bayar", receiptPaymentStatus(transaction), width),
-    ...pairLines("Estimasi", transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-", width),
-    ...(transaction.notes ? wrapText(`Catatan: ${transaction.notes}`, width) : []),
-    "",
-    divider(width),
-    "",
-    ...centerLines("Terima kasih sudah menggunakan", width),
-    ...centerLines("layanan kami.", width),
-  ];
+function buildReceiptText(transaction: Transaction, settings: StoreSettings, includeHeader = true) {
+  // 58mm = 32 chars, 80mm = 48 chars
+  const lineWidth = settings.receiptWidth === 80 ? 48 : 32;
 
-  return `${lines.join("\n")}\n`;
-}
+  const sanitizeReceiptText = (value: string) => {
+    return value.replace(/\xA0|&nbsp;/g, " ");
+  };
 
-function centerLines(value: string, width: number) {
-  return wrapText(value, width).map((text) => {
-    const padding = Math.max(0, Math.floor((width - text.length) / 2));
-    return `${" ".repeat(padding)}${text}`;
-  });
-}
+  const formatLine = (left: string, right: string) => {
+    let leftText = sanitizeReceiptText(left).trim();
+    const rightText = sanitizeReceiptText(right).trim().slice(0, lineWidth - 1);
+    let spaces = lineWidth - leftText.length - rightText.length;
 
-function wrapText(value: string, width: number) {
-  const words = value.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return [""];
-  const lines: string[] = [];
-  let current = "";
+    if (spaces < 1) {
+      leftText = leftText.substring(0, Math.max(0, lineWidth - rightText.length - 1));
+      spaces = lineWidth - leftText.length - rightText.length;
+    }
 
-  for (const word of words) {
-    if (word.length > width) {
-      if (current) lines.push(current);
-      for (let index = 0; index < word.length; index += width) {
-        lines.push(word.slice(index, index + width));
+    return `${leftText}${" ".repeat(spaces)}${rightText}`;
+  };
+
+  const wrapText = (value: string) => {
+    const words = sanitizeReceiptText(value).trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return [""];
+    const lines: string[] = [];
+    let current = "";
+
+    for (const word of words) {
+      if (word.length > lineWidth) {
+        if (current) lines.push(current);
+        for (let index = 0; index < word.length; index += lineWidth) {
+          lines.push(word.slice(index, index + lineWidth));
+        }
+        current = "";
+        continue;
       }
-      current = "";
-      continue;
+
+      const next = current ? `${current} ${word}` : word;
+      if (next.length <= lineWidth) current = next;
+      else {
+        lines.push(current);
+        current = word;
+      }
     }
 
-    const next = current ? `${current} ${word}` : word;
-    if (next.length <= width) current = next;
-    else {
-      lines.push(current);
-      current = word;
+    if (current) lines.push(current);
+    return lines;
+  };
+
+  const divider = () => "-".repeat(lineWidth);
+
+  let result = "";
+
+  if (includeHeader) {
+    // ESC a 1: Rata Tengah Bawaan Printer (Native Hardware Alignment)
+    result += "\x1b\x61\x01"; 
+    result += wrapText(settings.storeName).join("\n") + "\n";
+    result += wrapText(settings.address).join("\n") + "\n";
+    result += wrapText(`WA: ${settings.whatsapp}`).join("\n") + "\n";
+    result += "\n";
+    // ESC a 0: Rata Kiri Bawaan Printer
+    result += "\x1b\x61\x00"; 
+  }
+
+  result += divider() + "\n";
+  result += formatLine("No", transaction.transactionNumber) + "\n";
+  result += formatLine("Tanggal", formatDate(transaction.createdAt)) + "\n";
+  result += formatLine("Kasir", transaction.cashier.name) + "\n";
+  result += formatLine("Pelanggan", transaction.customer.name) + "\n";
+  result += formatLine("HP", transaction.customer.phone || "-") + "\n";
+  result += "\n";
+  result += divider() + "\n";
+
+  for (const item of transaction.items) {
+    result += wrapText(item.serviceName).join("\n") + "\n";
+    result += formatLine(`${item.quantity} ${unitLabel[item.unit]} x ${formatRupiah(item.price)}`, formatRupiah(item.subtotal)) + "\n";
+    if (item.notes) {
+      result += wrapText(`Catatan: ${item.notes}`).join("\n") + "\n";
     }
   }
 
-  if (current) lines.push(current);
-  return lines;
-}
-
-function right(value: string, width: number) {
-  const text = value.trim().slice(0, width);
-  const padding = Math.max(0, Math.floor((width - text.length) / 2));
-  return `${" ".repeat(width - text.length)}${text}`;
-}
-
-function divider(width: number) {
-  return "-".repeat(width);
-}
-
-function pairLines(label: string, value: string, width: number) {
-  const left = label.trim();
-  const right = value.trim();
-  if (!right) return wrapText(left, width);
-
-  if (left.length + right.length + 1 <= width) {
-    return [`${left}${" ".repeat(width - left.length - right.length)}${right}`];
+  result += "\n";
+  result += divider() + "\n";
+  result += formatLine("Subtotal", formatRupiah(transaction.subtotal)) + "\n";
+  if (transaction.discount > 0) result += formatLine("Diskon", formatRupiah(transaction.discount)) + "\n";
+  if (transaction.additionalFee > 0) result += formatLine("Tambahan", formatRupiah(transaction.additionalFee)) + "\n";
+  if (transaction.tax > 0) result += formatLine("Pajak", formatRupiah(transaction.tax)) + "\n";
+  
+  result += "\n";
+  result += divider() + "\n";
+  result += formatLine("TOTAL", formatRupiah(transaction.grandTotal)) + "\n";
+  result += formatLine("Dibayar", formatRupiah(transaction.paidAmount)) + "\n";
+  result += formatLine("Kembali", formatRupiah(transaction.changeAmount)) + "\n";
+  result += formatLine("Metode", transaction.payments[0] ? paymentMethodLabel[transaction.payments[0].paymentMethod] : "-") + "\n";
+  result += formatLine("Bayar", receiptPaymentStatus(transaction)) + "\n";
+  result += formatLine("Estimasi", transaction.estimatedDoneAt ? formatDate(transaction.estimatedDoneAt, "dd MMM yyyy") : "-") + "\n";
+  if (transaction.notes) {
+    result += wrapText(`Catatan: ${transaction.notes}`).join("\n") + "\n";
   }
 
-  return [
-    ...wrapText(left, width),
-    ...wrapText(right, width).map((line) => rightPadLine(line, width))
-  ];
-}
+  result += "\n";
+  result += divider() + "\n";
+  result += "\n";
 
-function rightPadLine(value: string, width: number) {
-  return right(value, width);
+  // ESC a 1: Rata Tengah Bawaan Printer
+  result += "\x1b\x61\x01"; 
+  result += wrapText("Terima kasih sudah menggunakan").join("\n") + "\n";
+  result += wrapText("layanan kami.").join("\n") + "\n";
+  // ESC a 0: Rata Kiri Bawaan Printer
+  result += "\x1b\x61\x00"; 
+
+  return result;
 }

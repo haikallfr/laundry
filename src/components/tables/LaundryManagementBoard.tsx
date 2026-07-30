@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Banknote, CreditCard, Filter, MessageCircle, Printer, RotateCw, Search, Shirt, Timer, Truck, X } from "lucide-react";
+import { Banknote, CreditCard, Filter, MessageCircle, RotateCw, Search, Shirt, Timer, Truck, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { PrintReceiptButton } from "@/components/receipt/PrintReceiptButton";
 import { formatDate, formatRupiah, laundryStatusLabel, paymentStatusLabel, unitLabel } from "@/lib/utils";
-import type { LaundryStatus, PaymentMethod, PaymentStatus, Transaction } from "@/types";
+import type { LaundryStatus, PaymentMethod, PaymentStatus, StoreSettings, Transaction } from "@/types";
 
 const statusGroups: Array<{ status: LaundryStatus; title: string; icon: typeof Timer; tone: string }> = [
   { status: "NEW", title: "Baru Masuk", icon: Timer, tone: "bg-amber-50 text-amber-700" },
@@ -26,7 +27,7 @@ const nextStatus: Record<LaundryStatus, LaundryStatus | null> = {
 const activeStatuses: LaundryStatus[] = ["NEW", "PROCESSING", "READY_FOR_PICKUP"];
 type PeriodFilter = "3d" | "today" | "7d" | "month" | "all";
 
-export function LaundryManagementBoard({ transactions }: { transactions: Transaction[] }) {
+export function LaundryManagementBoard({ transactions, settings }: { transactions: Transaction[]; settings: StoreSettings }) {
   const router = useRouter();
   const [saving, setSaving] = useState("");
   const [query, setQuery] = useState("");
@@ -280,7 +281,7 @@ export function LaundryManagementBoard({ transactions }: { transactions: Transac
                   ) : null}
                   <div className="grid grid-cols-2 gap-2">
                     <Link href={`/transactions/${trx.id}`}><Button className="w-full" variant="secondary" size="sm">Detail</Button></Link>
-                    <Link href={`/print/receipt/${trx.id}`} target="_blank"><Button className="w-full" variant="secondary" size="sm"><Printer className="h-4 w-4" />Nota</Button></Link>
+                    <PrintReceiptButton className="w-full" variant="secondary" size="sm" transaction={trx} settings={settings} label="Nota" onError={setError} />
                   </div>
                   {trx.laundryStatus === "READY_FOR_PICKUP" ? (
                     reminderUrl ? (
@@ -362,7 +363,7 @@ export function LaundryManagementBoard({ transactions }: { transactions: Transac
                         ) : null}
                         <div className="grid grid-cols-2 gap-1 sm:gap-2">
                           <Link className="min-w-0" href={`/transactions/${trx.id}`}><Button className="h-7 w-full px-1 text-[10px] sm:h-9 sm:px-2 sm:text-xs xl:text-sm" variant="secondary" size="sm">Detail</Button></Link>
-                          <Link className="min-w-0" href={`/print/receipt/${trx.id}`} target="_blank"><Button className="h-7 w-full gap-0.5 px-1 text-[10px] sm:h-9 sm:gap-1 sm:px-2 sm:text-xs xl:text-sm" variant="secondary" size="sm"><Printer className="h-3 w-3 sm:h-4 sm:w-4" /><span>Nota</span></Button></Link>
+                          <PrintReceiptButton className="h-7 w-full gap-0.5 px-1 text-[10px] sm:h-9 sm:gap-1 sm:px-2 sm:text-xs xl:text-sm" iconClassName="h-3 w-3 sm:h-4 sm:w-4" variant="secondary" size="sm" transaction={trx} settings={settings} label="Nota" onError={setError} />
                         </div>
                         {trx.laundryStatus === "READY_FOR_PICKUP" ? (
                           reminderUrl ? (

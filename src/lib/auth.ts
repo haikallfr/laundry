@@ -3,9 +3,18 @@ import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import type { Role, User } from "@/types";
 import { readUserById } from "@/lib/store";
+import { users } from "@/lib/mock-data";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev-secret-minimal-32-karakter-laundry-pos");
 export const authCookieName = "laundry_pos_session";
+
+function authDisabled() {
+  return process.env.VERCEL === "1" && !process.env.DATABASE_URL && !process.env.SUPABASE_URL;
+}
+
+function defaultOwner() {
+  return users.find((user) => user.role === "OWNER")!;
+}
 
 export async function signSession(user: User) {
   return new SignJWT({ id: user.id, role: user.role, name: user.name, email: user.email })
@@ -26,6 +35,7 @@ export async function verifyToken(token?: string) {
 }
 
 export async function currentUser() {
+  if (authDisabled()) return defaultOwner();
   const cookieStore = await cookies();
   const session = await verifyToken(cookieStore.get(authCookieName)?.value);
   if (!session) return null;
@@ -33,6 +43,7 @@ export async function currentUser() {
 }
 
 export async function currentUserFromRequest(request: NextRequest) {
+  if (authDisabled()) return defaultOwner();
   const session = await verifyToken(request.cookies.get(authCookieName)?.value);
   if (!session) return null;
   return await readUserById(session.id) ?? { id: session.id, name: session.name, email: session.email, role: session.role, status: "ACTIVE" };

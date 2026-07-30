@@ -19,6 +19,42 @@
   ],
   "customers": [
     {
+      "id": "cus-1784082099960",
+      "name": "Haikal",
+      "phone": "012890341283",
+      "address": "dasga",
+      "notes": "",
+      "createdAt": "2026-07-15T02:21:29.980Z",
+      "updatedAt": "2026-07-15T02:21:53.537Z"
+    },
+    {
+      "id": "cus-1784081998032",
+      "name": "Haikakl",
+      "phone": "2143124",
+      "address": "dsafdasf",
+      "notes": "",
+      "createdAt": "2026-07-15T02:19:52.373Z",
+      "updatedAt": "2026-07-15T02:20:09.067Z"
+    },
+    {
+      "id": "cus-1780025405832",
+      "name": "dsf",
+      "phone": "sfd",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-05-29T03:30:03.873Z",
+      "updatedAt": "2026-05-29T03:30:11.787Z"
+    },
+    {
+      "id": "cus-1780022879167",
+      "name": "sdf",
+      "phone": "dsaf",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-05-29T02:37:34.523Z",
+      "updatedAt": "2026-05-29T02:48:06.392Z"
+    },
+    {
       "id": "cus-1779086264386",
       "name": "Haikal",
       "phone": "",
@@ -60,6 +96,233 @@
     }
   ],
   "transactions": [
+    {
+      "id": "trx-1784082113457-de2a7504",
+      "transactionNumber": "LDY-20260715-4371",
+      "customerId": "cus-1784082099960",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1784082099960",
+        "name": "Haikal",
+        "phone": "012890341283",
+        "address": "dasga",
+        "notes": "",
+        "createdAt": "2026-07-15T02:21:29.980Z",
+        "updatedAt": "2026-07-15T02:21:29.980Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "501d5c81-3a14-47f5-9121-32f8ba6434f0",
+          "serviceId": "srv-1779324773540",
+          "serviceName": "Laundry VIP",
+          "unit": "KG",
+          "quantity": 56,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 504000,
+          "notes": ""
+        }
+      ],
+      "payments": [],
+      "subtotal": 504000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 504000,
+      "paidAmount": 0,
+      "changeAmount": 0,
+      "paymentStatus": "UNPAID",
+      "laundryStatus": "READY_FOR_PICKUP",
+      "estimatedDoneAt": "2026-07-15T05:21:45.233Z",
+      "notes": "",
+      "createdAt": "2026-07-15T02:21:51.458Z",
+      "updatedAt": "2026-07-15T02:22:07.628Z"
+    },
+    {
+      "id": "trx-1784082008908-6f161e24",
+      "transactionNumber": "LDY-20260715-2905",
+      "customerId": "cus-1784081998032",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1784081998032",
+        "name": "Haikakl",
+        "phone": "2143124",
+        "address": "dsafdasf",
+        "notes": "",
+        "createdAt": "2026-07-15T02:19:52.373Z",
+        "updatedAt": "2026-07-15T02:19:52.373Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "43a72a07-4ba6-42c0-94e9-8d0a66e968d9",
+          "serviceId": "srv-1779324773540",
+          "serviceName": "Laundry VIP",
+          "unit": "KG",
+          "quantity": 1,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 9000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-54b50ef5-a275-424f-bc46-31f34ba3ea20",
+          "transactionId": "trx-1784082008908-6f161e24",
+          "paymentMethod": "CASH",
+          "amount": 9000,
+          "paidAt": "2026-07-15T02:20:08.009Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 9000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 9000,
+      "paidAmount": 10000,
+      "changeAmount": 1000,
+      "paymentStatus": "PAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-07-15T05:20:02.835Z",
+      "notes": "",
+      "createdAt": "2026-07-15T02:20:08.009Z",
+      "updatedAt": "2026-07-15T02:20:08.009Z"
+    },
+    {
+      "id": "trx-1780025411769-8f29cfde",
+      "transactionNumber": "LDY-20260529-1439",
+      "customerId": "cus-1780025405832",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1780025405832",
+        "name": "dsf",
+        "phone": "sfd",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-29T03:30:03.873Z",
+        "updatedAt": "2026-05-29T03:30:03.873Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "d902e844-bd2b-4638-aac1-8ee085fe39c0",
+          "serviceId": "srv-4",
+          "serviceName": "Laundry Express",
+          "unit": "KG",
+          "quantity": 2,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 14000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-4850225a-10e2-4c0b-a616-e3d319674687",
+          "transactionId": "trx-1780025411769-8f29cfde",
+          "paymentMethod": "CASH",
+          "amount": 14000,
+          "paidAt": "2026-05-29T03:30:11.243Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 14000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 14000,
+      "paidAmount": 14000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-05-29T11:30:08.364Z",
+      "notes": "",
+      "createdAt": "2026-05-29T03:30:11.243Z",
+      "updatedAt": "2026-05-29T03:30:11.243Z"
+    },
+    {
+      "id": "trx-1780022886219-f10f3747",
+      "transactionNumber": "LDY-20260529-4412",
+      "customerId": "cus-1780022879167",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1780022879167",
+        "name": "sdf",
+        "phone": "dsaf",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-05-29T02:37:34.523Z",
+        "updatedAt": "2026-05-29T02:37:34.523Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Yessica",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "96c2cef1-bd6b-4a8f-8267-35f14507d059",
+          "serviceId": "srv-4",
+          "serviceName": "Laundry Express",
+          "unit": "KG",
+          "quantity": 3,
+          "price": 7000,
+          "cost": 0,
+          "subtotal": 21000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-b8c2e523-ad6b-4ad8-a8bf-e2543d7cad96",
+          "transactionId": "trx-1780022886219-f10f3747",
+          "paymentMethod": "CASH",
+          "amount": 21000,
+          "paidAt": "2026-05-29T02:48:05.551Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 21000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 21000,
+      "paidAmount": 21000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-05-29T10:48:02.036Z",
+      "notes": "",
+      "createdAt": "2026-05-29T02:48:05.551Z",
+      "updatedAt": "2026-05-29T02:48:05.551Z"
+    },
     {
       "id": "trx-1779086287664",
       "transactionNumber": "LDY-20260518-9721",

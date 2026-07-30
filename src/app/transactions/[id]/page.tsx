@@ -1,10 +1,8 @@
 export const dynamic = 'force-dynamic';
 
-import Link from "next/link";
-import { Printer } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { PrintReceiptButton } from "@/components/receipt/PrintReceiptButton";
 import { ReceiptPreview } from "@/components/receipt/ReceiptPrintLayout";
 import { formatDate, formatRupiah, laundryStatusLabel, paymentStatusLabel } from "@/lib/utils";
 import { readSettings, readTransactionById } from "@/lib/store";
@@ -17,7 +15,7 @@ export default async function TransactionDetailPage({ params }: { params: Promis
   if (!transaction) return null;
   return (
     <AppShell>
-      <SectionHeader title={transaction.transactionNumber} description="Detail transaksi, status pembayaran, update laundry, dan re-print nota." action={<Link href={`/print/receipt/${transaction.id}?autoprint=1`}><Button><Printer className="h-4 w-4" />Print nota</Button></Link>} />
+      <SectionHeader title={transaction.transactionNumber} description="Detail transaksi, status pembayaran, update laundry, dan re-print nota." action={<PrintReceiptButton transaction={transaction} settings={settings} label="Print nota" />} />
       <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
         <div className="space-y-4">
           <section className="rounded-lg border border-line bg-white p-4 shadow-subtle">

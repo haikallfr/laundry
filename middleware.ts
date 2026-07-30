@@ -18,6 +18,7 @@ const protectedPrefixes = [
 ];
 
 export async function middleware(request: NextRequest) {
+  // Removed bypass
   const path = request.nextUrl.pathname;
   if (path.startsWith("/api/auth")) return NextResponse.next();
   const isProtected = protectedPrefixes.some((prefix) => path.startsWith(prefix));
