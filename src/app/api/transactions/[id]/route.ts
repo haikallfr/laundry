@@ -52,3 +52,22 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   });
   return NextResponse.json({ data: { id, ...body }, audit: { action: "TRANSACTION_UPDATED" } });
 }
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  if (hasRelationalStore()) {
+    try {
+      await getPrisma().transaction.delete({ where: { id } });
+      return NextResponse.json({ message: "Transaksi berhasil dihapus." });
+    } catch (error) {
+      return NextResponse.json({ error: "Gagal menghapus transaksi." }, { status: 500 });
+    }
+  }
+
+  await updateStore((data) => {
+    data.transactions = data.transactions.filter((row) => row.id !== id);
+  });
+  
+  return NextResponse.json({ message: "Transaksi berhasil dihapus." });
+}

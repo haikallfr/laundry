@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatDate, formatRupiah, laundryStatusLabel, paymentMethodLabel, paymentStatusLabel } from "@/lib/utils";
 import type { Transaction } from "@/types";
+import { DeleteTransactionButton } from "./DeleteTransactionButton";
 
 export function TransactionTable({ transactions }: { transactions: Transaction[] }) {
   return (
@@ -31,7 +32,10 @@ export function TransactionTable({ transactions }: { transactions: Transaction[]
                 <p className="text-muted">Kasir: {trx.cashier.name}</p>
               </div>
             </div>
-            <Link className="mt-3 flex h-9 items-center justify-center rounded-lg border border-line text-xs font-semibold text-brand-700" href={`/transactions/${trx.id}`}>Detail</Link>
+            <div className="mt-3 flex gap-2">
+              <Link className="flex flex-1 h-9 items-center justify-center rounded-lg border border-line text-xs font-semibold text-brand-700 hover:bg-brand-50" href={`/transactions/${trx.id}`}>Detail</Link>
+              <DeleteTransactionButton transactionId={trx.id} />
+            </div>
           </article>
         ))}
         {transactions.length === 0 ? <div className="rounded-lg border border-dashed border-line bg-white p-6 text-center text-sm text-muted">Belum ada transaksi.</div> : null}
@@ -47,7 +51,7 @@ export function TransactionTable({ transactions }: { transactions: Transaction[]
               <th className="px-4 py-3">Total</th>
               <th className="px-4 py-3">Pembayaran</th>
               <th className="px-4 py-3">Laundry</th>
-              <th className="px-4 py-3">Aksi</th>
+              <th className="px-4 py-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -66,8 +70,11 @@ export function TransactionTable({ transactions }: { transactions: Transaction[]
                   <div className="text-xs text-muted">{trx.payments[0] ? paymentMethodLabel[trx.payments[0].paymentMethod] : "-"}</div>
                 </td>
                 <td className="px-4 py-3">{laundryStatusLabel[trx.laundryStatus]}</td>
-                <td className="px-4 py-3">
-                  <Link className="font-semibold text-brand-700 hover:underline" href={`/transactions/${trx.id}`}>Detail</Link>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex justify-end gap-3 items-center">
+                    <Link className="font-semibold text-brand-700 hover:underline" href={`/transactions/${trx.id}`}>Detail</Link>
+                    <DeleteTransactionButton transactionId={trx.id} />
+                  </div>
                 </td>
               </tr>
             ))}
