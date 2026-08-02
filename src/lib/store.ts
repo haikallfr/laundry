@@ -22,19 +22,10 @@ export type ShellData = {
 const dataDir = path.join(process.cwd(), "data");
 const dataFile = path.join(dataDir, "laundry-pos.json");
 const capitalPlanFile = path.join(dataDir, "capital-plan.json");
-const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
-const supabaseTable = process.env.SUPABASE_STORE_TABLE || "app_store";
-const storeKey = process.env.APP_STORE_KEY || "default";
 const relationalStoreEnabled = Boolean(process.env.DATABASE_URL);
 
 function isVercelDemoMode() {
   return false;
-}
-
-export function hasSupabaseStore() {
-  if (isVercelDemoMode()) return false;
-  return Boolean(supabaseUrl && supabaseKey);
 }
 
 export function hasRelationalStore() {
@@ -81,8 +72,6 @@ export const readStore = cache(async function readStore(): Promise<AppData> {
     }
     return readPrismaStore();
   }
-  if (hasSupabaseStore()) return readSupabaseStore();
-
   try {
     const raw = await readFile(dataFile, "utf8");
     return JSON.parse(raw) as AppData;
@@ -98,11 +87,6 @@ export async function writeStore(data: AppData) {
 
   if (hasRelationalStore()) {
     await writePrismaStore(data);
-    return;
-  }
-
-  if (hasSupabaseStore()) {
-    await writeSupabaseStore(data);
     return;
   }
 
@@ -450,44 +434,6 @@ export async function readShellData(user: User): Promise<ShellData> {
   };
 }
 
-async function requestSupabase(pathname: string, init?: RequestInit) {
-  const response = await fetch(`${supabaseUrl}/rest/v1/${pathname}`, {
-    ...init,
-    headers: {
-      apikey: supabaseKey!,
-      authorization: `Bearer ${supabaseKey}`,
-      "content-type": "application/json",
-      ...(init?.headers ?? {})
-    },
-    cache: "no-store"
-  });
-
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(`Supabase store error: ${response.status} ${message}`);
-  }
-
-  return response;
-}
-
-async function readSupabaseStore(): Promise<AppData> {
-  const response = await requestSupabase(`${supabaseTable}?select=data&key=eq.${encodeURIComponent(storeKey)}&limit=1`);
-  const rows = (await response.json()) as { data: AppData }[];
-  if (rows[0]?.data) return rows[0].data;
-
-  const seeded = seedData();
-  await writeSupabaseStore(seeded);
-  return seeded;
-}
-
-async function writeSupabaseStore(data: AppData) {
-  await requestSupabase(supabaseTable, {
-    method: "POST",
-    headers: { Prefer: "resolution=merge-duplicates" },
-    body: JSON.stringify({ key: storeKey, data, updated_at: new Date().toISOString() })
-  });
-}
-
 function iso(value?: string | Date | null) {
   if (!value) return undefined;
   return value instanceof Date ? value.toISOString() : value;
@@ -654,8 +600,7 @@ async function readPrismaStore(): Promise<AppData> {
   const userCount = await prisma.user.count();
 
   if (userCount === 0) {
-    const legacy = hasSupabaseStore() ? await readSupabaseStore().catch(() => null) : null;
-    await writePrismaStore(legacy ?? seedData());
+    await writePrismaStore(seedData());
   }
 
   const [dbUsers, dbCustomers, dbServices, dbTransactions, dbExpenses, storeSetting] = await Promise.all([
@@ -733,7 +678,7 @@ async function writePrismaStore(data: AppData) {
       data: data.customers.map((customer) => ({
         id: customer.id,
         name: customer.name,
-        phone: customer.phone,
+        phone: customer.phone || `__NO_PHONE__:${customer.id}`,
         address: customer.address ?? null,
         notes: customer.notes ?? null,
         createdAt: asDate(customer.createdAt) ?? new Date(),
