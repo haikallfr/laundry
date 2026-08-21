@@ -1,7 +1,5 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { NextResponse } from "next/server";
-import { hasSupabaseStore, updateStore } from "@/lib/store";
+import { updateStore } from "@/lib/store";
 import { requireOwner } from "@/lib/api-guard";
 
 const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -17,15 +15,9 @@ export async function POST(request: Request) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const extension = file.name.split(".").pop() || "png";
   const fileName = `qris-${Date.now()}.${extension}`;
-  let fileUrl = `data:${file.type};base64,${buffer.toString("base64")}`;
-
-  if (!hasSupabaseStore()) {
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "qris");
-    const target = path.join(uploadDir, fileName);
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(target, buffer);
-    fileUrl = `/uploads/qris/${fileName}`;
-  }
+  // Filesystem Vercel is read-only/ephemeral. Store the validated image with
+  // the application data so the QRIS remains available after every deployment.
+  const fileUrl = `data:${file.type};base64,${buffer.toString("base64")}`;
 
   await updateStore((data) => {
     data.settings.qrisUrl = fileUrl;

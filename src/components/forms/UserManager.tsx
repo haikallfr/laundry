@@ -22,24 +22,37 @@ export function UserManager({ initialUsers }: { initialUsers: User[] }) {
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
-    const response = await fetch(editingId ? `/api/users/${editingId}` : "/api/users", {
-      method: editingId ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
-    const json = await response.json();
-    if (editingId) setUsers((rows) => rows.map((row) => row.id === editingId ? { ...row, ...form, id: editingId } : row));
-    else setUsers((rows) => [json.data, ...rows]);
-    setEditingId(null);
-    setForm(blank);
-    setMessage("User berhasil disimpan.");
-    router.refresh();
+    try {
+      const response = await fetch(editingId ? `/api/users/${editingId}` : "/api/users", {
+        method: editingId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setMessage(json.error ?? "Gagal menyimpan user.");
+        return;
+      }
+      if (editingId) setUsers((rows) => rows.map((row) => row.id === editingId ? { ...row, ...form, id: editingId } : row));
+      else setUsers((rows) => [json.data, ...rows]);
+      setEditingId(null);
+      setForm(blank);
+      setMessage("User berhasil disimpan.");
+      router.refresh();
+    } catch {
+      setMessage("Gagal menyimpan user. Coba lagi.");
+    }
   }
 
   async function remove(id: string) {
-    await fetch(`/api/users/${id}`, { method: "DELETE" });
-    setUsers((rows) => rows.filter((row) => row.id !== id));
-    router.refresh();
+    try {
+      const response = await fetch(`/api/users/${id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error();
+      setUsers((rows) => rows.filter((row) => row.id !== id));
+      router.refresh();
+    } catch {
+      setMessage("Gagal menghapus user. Coba lagi.");
+    }
   }
 
   function edit(user: User) {
@@ -69,7 +82,7 @@ export function UserManager({ initialUsers }: { initialUsers: User[] }) {
       <div className="overflow-hidden rounded-lg border border-line bg-white shadow-subtle">
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-[0.08em] text-muted"><tr><th className="px-4 py-3">Nama</th><th>Email</th><th>HP</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
-          <tbody className="divide-y divide-line">{users.map((user) => <tr key={user.id}><td className="px-4 py-3 font-bold">{user.name}</td><td>{user.email}</td><td>{user.phone}</td><td>{user.role}</td><td><span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">{user.status}</span></td><td className="space-x-2"><button className="font-semibold text-brand-700" onClick={() => edit(user)}>Edit</button><button className="font-semibold text-red-600" onClick={() => remove(user.id)}>Hapus</button></td></tr>)}</tbody>
+          <tbody className="divide-y divide-line">{users.map((user) => <tr key={user.id}><td className="px-4 py-3 font-bold">{user.name}</td><td>{user.email}</td><td>{user.phone}</td><td>{user.role}</td><td><span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">{user.status}</span></td><td className="space-x-2"><button type="button" className="font-semibold text-brand-700" onClick={() => edit(user)}>Edit</button><button type="button" className="font-semibold text-red-600" onClick={() => remove(user.id)}>Hapus</button></td></tr>)}</tbody>
         </table>
       </div>
     </div>

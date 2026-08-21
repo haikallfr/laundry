@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { TransactionTable } from "@/components/tables/TransactionTable";
@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/utils";
 import type { LaundryStatus, PaymentMethod, PaymentStatus, Transaction } from "@/types";
 
 export function TransactionList({ transactions }: { transactions: Transaction[] }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [laundryStatus, setLaundryStatus] = useState("");
@@ -75,7 +76,7 @@ export function TransactionList({ transactions }: { transactions: Transaction[] 
       </div>
       <div className="mb-3 flex items-center justify-between gap-2 text-xs text-muted md:text-sm">
         <span>{filtered.length} dari {baseTransactions.length} transaksi aktif{isOutstandingView ? " yang belum lunas / DP" : ""}</span>
-        <Button className="shrink-0 px-2 text-xs md:text-sm" variant="secondary" size="sm" onClick={() => { setQuery(""); setLaundryStatus(""); setPaymentStatus(""); setPaymentMethod(""); }}><Filter className="h-4 w-4" />Reset</Button>
+        <Button type="button" className="shrink-0 px-2 text-xs md:text-sm" variant="secondary" size="sm" onClick={() => { setQuery(""); setLaundryStatus(""); setPaymentStatus(""); setPaymentMethod(""); router.replace("/transactions"); }}><Filter className="h-4 w-4" />Reset</Button>
       </div>
       <TransactionTable transactions={filtered} />
     </>

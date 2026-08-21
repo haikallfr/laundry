@@ -671,7 +671,7 @@ async function writePrismaStore(data: AppData) {
         role: user.role,
         status: user.status
       })),
-      skipDuplicates: true
+      
     });
 
     await tx.customer.createMany({
@@ -684,7 +684,7 @@ async function writePrismaStore(data: AppData) {
         createdAt: asDate(customer.createdAt) ?? new Date(),
         updatedAt: asDate(customer.updatedAt) ?? new Date()
       })),
-      skipDuplicates: true
+      
     });
 
     await tx.service.createMany({
@@ -698,7 +698,7 @@ async function writePrismaStore(data: AppData) {
         estimatedDuration: service.estimatedDuration ?? null,
         isActive: service.isActive
       })),
-      skipDuplicates: true
+      
     });
 
     await tx.setting.upsert({

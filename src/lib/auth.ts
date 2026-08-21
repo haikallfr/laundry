@@ -9,7 +9,7 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev-secret-mi
 export const authCookieName = "laundry_pos_session";
 
 function authDisabled() {
-  return process.env.VERCEL === "1" && !process.env.DATABASE_URL && !process.env.SUPABASE_URL;
+  return process.env.VERCEL === "1" && !process.env.DATABASE_URL;
 }
 
 function defaultOwner() {
@@ -39,14 +39,16 @@ export async function currentUser() {
   const cookieStore = await cookies();
   const session = await verifyToken(cookieStore.get(authCookieName)?.value);
   if (!session) return null;
-  return await readUserById(session.id) ?? { id: session.id, name: session.name, email: session.email, role: session.role, status: "ACTIVE" };
+  const storedUser = await readUserById(session.id).catch(() => null);
+  return storedUser ?? { id: session.id, name: session.name, email: session.email, role: session.role, status: "ACTIVE" };
 }
 
 export async function currentUserFromRequest(request: NextRequest) {
   if (authDisabled()) return defaultOwner();
   const session = await verifyToken(request.cookies.get(authCookieName)?.value);
   if (!session) return null;
-  return await readUserById(session.id) ?? { id: session.id, name: session.name, email: session.email, role: session.role, status: "ACTIVE" };
+  const storedUser = await readUserById(session.id).catch(() => null);
+  return storedUser ?? { id: session.id, name: session.name, email: session.email, role: session.role, status: "ACTIVE" };
 }
 
 export function canAccessPath(role: Role, path: string) {

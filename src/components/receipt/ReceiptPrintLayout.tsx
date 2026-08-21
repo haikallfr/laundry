@@ -43,8 +43,9 @@ export function ReceiptPrintLayout({ transaction, settings }: { transaction: Tra
     <div className="print-shell min-h-screen bg-slate-100 p-6">
       <div className="no-print mb-4 flex flex-wrap items-center gap-2">
         <Button onClick={printViaBluetooth} disabled={isBluetoothPrinting}>
-          {isBluetoothPrinting ? "Mengirim..." : "Print Nota"}
+          {isBluetoothPrinting ? "Mengirim..." : "Print Bluetooth"}
         </Button>
+        <Button variant="outline" onClick={() => window.print()}>Print Biasa</Button>
         <Button variant="secondary" onClick={() => setWidth(58)}>58mm</Button>
         <Button variant="secondary" onClick={() => setWidth(80)}>80mm</Button>
       </div>
@@ -193,13 +194,15 @@ export async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigat
       0x0a, 0x0a, 0x0a,
     ]);
 
-    for (let start = 0; start < bytes.length; start += 120) {
-      const chunk = bytes.slice(start, start + 120);
+    const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    for (let start = 0; start < bytes.length; start += 100) {
+      const chunk = bytes.slice(start, start + 100);
       if (characteristic.writeValueWithoutResponse && characteristic.properties.writeWithoutResponse) {
         await characteristic.writeValueWithoutResponse(chunk);
       } else {
         await characteristic.writeValue(chunk);
       }
+      await delay(20);
     }
   } finally {
     server.disconnect?.();
@@ -207,10 +210,15 @@ export async function writeEscposReceipt(bluetooth: NonNullable<BluetoothNavigat
 }
 
 async function getBluetoothDevice(bluetooth: NonNullable<BluetoothNavigator["bluetooth"]>) {
-  const permittedDevices = await bluetooth.getDevices?.();
-  const permittedDevice = permittedDevices?.find((device) => device.gatt);
-
-  if (permittedDevice) return permittedDevice;
+  if (typeof bluetooth.getDevices === "function") {
+    try {
+      const permittedDevices = await bluetooth.getDevices();
+      const permittedDevice = permittedDevices.find((device) => device.gatt);
+      if (permittedDevice) return permittedDevice;
+    } catch (e) {
+      // Abaikan jika error di Bluefy
+    }
+  }
 
   return bluetooth.requestDevice({
     acceptAllDevices: true,

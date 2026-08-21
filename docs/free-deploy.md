@@ -3,30 +3,18 @@
 Stack gratis yang dipakai:
 
 - Vercel Free untuk hosting Next.js.
-- Supabase Free untuk menyimpan data aplikasi.
+- Neon Free untuk PostgreSQL aplikasi.
 
-## Supabase
+## Neon
 
-Buat tabel berikut di Supabase SQL editor:
+Salin connection string dari menu **Connect** pada project Neon, lalu simpan sebagai `DATABASE_URL` di environment Production Vercel.
 
 ```sql
-create table if not exists public.app_store (
-  key text primary key,
-  data jsonb not null,
-  updated_at timestamptz not null default now()
-);
+DATABASE_URL=postgresql://USER:PASSWORD@HOST/neondb?sslmode=require
 ```
 
-Environment variable yang harus ada di Vercel:
+Setelah environment tersedia, jalankan skema Prisma ke Neon:
 
-```env
-SUPABASE_URL=https://project-ref.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=service-role-key
-# Fallback jika service role key tidak tersedia:
-SUPABASE_ANON_KEY=anon-key
-SUPABASE_STORE_TABLE=app_store
-APP_STORE_KEY=default
-JWT_SECRET=ganti-dengan-secret-minimal-32-karakter
+```bash
+npx prisma db push
 ```
-
-`SUPABASE_SERVICE_ROLE_KEY` atau `SUPABASE_ANON_KEY` hanya dipakai di server. Jangan memakai prefix `NEXT_PUBLIC_`.

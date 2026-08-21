@@ -34,19 +34,24 @@ export function QrisSettingsClient({ settings }: { settings: StoreSettings }) {
       return;
     }
     setSaving(true);
-    const form = new FormData();
-    form.append("file", file);
-    const response = await fetch("/api/settings/qris/upload", { method: "POST", body: form });
-    const json = await response.json().catch(() => ({}));
-    setSaving(false);
-    if (!response.ok) {
-      setMessage(json.error ?? "Gagal upload QRIS.");
-      return;
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const response = await fetch("/api/settings/qris/upload", { method: "POST", body: form });
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setMessage(json.error ?? "Gagal upload QRIS.");
+        return;
+      }
+      setPreview(json.data.fileUrl);
+      setFile(null);
+      setMessage("QRIS berhasil disimpan dan akan tampil di pembayaran kasir.");
+      router.refresh();
+    } catch {
+      setMessage("Gagal upload QRIS. Periksa koneksi lalu coba lagi.");
+    } finally {
+      setSaving(false);
     }
-    setPreview(json.data.fileUrl);
-    setFile(null);
-    setMessage("QRIS berhasil disimpan dan akan tampil di pembayaran kasir.");
-    router.refresh();
   }
 
   return (

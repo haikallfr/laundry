@@ -19,6 +19,33 @@
   ],
   "customers": [
     {
+      "id": "cus-1787141666922",
+      "name": "Haikal",
+      "phone": "2143123",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-08-19T12:14:22.522Z",
+      "updatedAt": "2026-08-19T12:14:41.725Z"
+    },
+    {
+      "id": "cus-1787141602587",
+      "name": "Yessica",
+      "phone": "081231234124",
+      "address": "sdafgdga",
+      "notes": "32431rewf",
+      "createdAt": "2026-08-19T12:13:16.965Z",
+      "updatedAt": "2026-08-19T12:13:42.855Z"
+    },
+    {
+      "id": "cus-1787141259671",
+      "name": "213",
+      "phone": "23",
+      "address": "",
+      "notes": "",
+      "createdAt": "2026-08-19T12:07:37.582Z",
+      "updatedAt": "2026-08-19T12:07:48.234Z"
+    },
+    {
       "id": "cus-1784082099960",
       "name": "Haikal",
       "phone": "012890341283",
@@ -96,6 +123,65 @@
     }
   ],
   "transactions": [
+    {
+      "id": "trx-1787141267581-c3313cce",
+      "transactionNumber": "LDY-20260819-3704",
+      "customerId": "cus-1787141259671",
+      "cashierId": "usr-owner",
+      "customer": {
+        "id": "cus-1787141259671",
+        "name": "213",
+        "phone": "23",
+        "address": "",
+        "notes": "",
+        "createdAt": "2026-08-19T12:07:37.582Z",
+        "updatedAt": "2026-08-19T12:07:37.582Z"
+      },
+      "cashier": {
+        "id": "usr-owner",
+        "name": "Nadia Owner",
+        "email": "owner@laundrypro.test",
+        "phone": "081234567890",
+        "role": "OWNER",
+        "status": "ACTIVE"
+      },
+      "items": [
+        {
+          "id": "024f4b6a-7da3-46ae-92c7-1e1ac6ced050",
+          "serviceId": "srv-1779324773540",
+          "serviceName": "Laundry VIP",
+          "unit": "KG",
+          "quantity": 1,
+          "price": 9000,
+          "cost": 0,
+          "subtotal": 9000,
+          "notes": ""
+        }
+      ],
+      "payments": [
+        {
+          "id": "pay-7021c788-6a62-46ca-93c8-de316f041594",
+          "transactionId": "trx-1787141267581-c3313cce",
+          "paymentMethod": "CASH",
+          "amount": 9000,
+          "paidAt": "2026-08-19T12:07:46.740Z",
+          "createdBy": "usr-owner"
+        }
+      ],
+      "subtotal": 9000,
+      "discount": 0,
+      "additionalFee": 0,
+      "tax": 0,
+      "grandTotal": 9000,
+      "paidAmount": 9000,
+      "changeAmount": 0,
+      "paymentStatus": "PAID",
+      "laundryStatus": "NEW",
+      "estimatedDoneAt": "2026-08-19T15:07:43.220Z",
+      "notes": "",
+      "createdAt": "2026-08-19T12:07:46.740Z",
+      "updatedAt": "2026-08-19T12:07:46.740Z"
+    },
     {
       "id": "trx-1784082113457-de2a7504",
       "transactionNumber": "LDY-20260715-4371",
@@ -993,8 +1079,8 @@
     }
   ],
   "settings": {
-    "storeName": "Yessi Laundry",
-    "address": "Jl. Boulevard Raya No. 17, Makassar",
+    "storeName": "Family Laundry",
+    "address": "Jl. Panglima Sudirman",
     "whatsapp": "0812-3456-7890",
     "receiptWidth": 58,
     "taxRate": 0,

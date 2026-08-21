@@ -39,11 +39,8 @@ export function PrintReceiptButton({
     const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     if (!bluetooth) {
-      handleError(
-        isIos
-          ? "Bluetooth langsung tidak tersedia di browser iPhone. Pakai Android/Windows untuk Bluetooth langsung."
-          : "Browser ini belum mendukung Web Bluetooth. Coba Chrome/Edge di Android atau desktop."
-      );
+      // Fallback ke cetak biasa via browser
+      window.open(`/print/receipt/${transaction.id}`, '_blank');
       return;
     }
 

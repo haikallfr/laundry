@@ -221,7 +221,7 @@ export function LaundryManagementBoard({ transactions, settings }: { transaction
             <option value="PARTIAL">DP</option>
             <option value="PAID">Lunas</option>
           </select>
-          <Button variant="secondary" className="h-9 min-w-0 whitespace-nowrap px-1.5 text-[11px] sm:h-10 sm:px-3 sm:text-sm" onClick={() => { setQuery(""); setPeriod("3d"); setStatus(""); setPaymentStatus(""); }}>Reset</Button>
+          <Button type="button" variant="secondary" className="h-9 min-w-0 whitespace-nowrap px-1.5 text-[11px] sm:h-10 sm:px-3 sm:text-sm" onClick={() => { setQuery(""); setPeriod("3d"); setStatus(""); setPaymentStatus(""); }}>Reset</Button>
         </div>
       </section>
 

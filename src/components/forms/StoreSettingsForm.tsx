@@ -15,18 +15,20 @@ export function StoreSettingsForm({ settings }: { settings: StoreSettings }) {
     event.preventDefault();
     setSaving(true);
     setMessage("");
-    const response = await fetch("/api/settings/store", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, receiptWidth: Number(form.receiptWidth), taxRate: Number(form.taxRate) })
-    });
-    setSaving(false);
-    if (!response.ok) {
-      setMessage("Gagal menyimpan pengaturan.");
-      return;
+    try {
+      const response = await fetch("/api/settings/store", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, receiptWidth: Number(form.receiptWidth), taxRate: Number(form.taxRate) })
+      });
+      if (!response.ok) throw new Error();
+      setMessage("Pengaturan toko berhasil disimpan.");
+      router.refresh();
+    } catch {
+      setMessage("Gagal menyimpan pengaturan. Coba lagi.");
+    } finally {
+      setSaving(false);
     }
-    setMessage("Pengaturan toko berhasil disimpan.");
-    router.refresh();
   }
 
   return (

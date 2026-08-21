@@ -7,7 +7,7 @@ export async function requireOwner(request: Request) {
   const token = cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${authCookieName}=`))?.split("=")[1];
   const session = await verifyToken(token);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const user = await readUserById(session.id);
-  if (!user || user.role !== "OWNER") return NextResponse.json({ error: "Owner only" }, { status: 403 });
+  const user = await readUserById(session.id).catch(() => null);
+  if ((user?.role ?? session.role) !== "OWNER") return NextResponse.json({ error: "Owner only" }, { status: 403 });
   return null;
 }

@@ -4,7 +4,7 @@
   "description": "Aplikasi POS kasir laundry profesional berbasis Next.js, Prisma, dan PostgreSQL.",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "postinstall": "prisma generate",
     "start": "next start",
